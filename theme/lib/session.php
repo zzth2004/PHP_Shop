@@ -91,7 +91,7 @@ class CustomSession
         self::init();
         if (self::get("login") == false) {
             self::destroy();
-            header("Location: login.php");
+            header("Location: login.html");
         }
     }
 
@@ -106,7 +106,8 @@ class CustomSession
     public static function destroy()
     {
         session_destroy();
-        header("Location: login.php");
+       
     }
+
 }
 ?>

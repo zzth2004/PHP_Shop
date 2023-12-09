@@ -1,7 +1,7 @@
 <?php
-
-include_once '../lib/database.php';
-include_once '../helpers/format.php';
+$filepath = realpath(dirname(__FILE__));
+include_once ($filepath.'/../lib/database.php');
+include_once ($filepath.'/../helpers/format.php');
 
 
 ?>
@@ -23,6 +23,8 @@ include_once '../helpers/format.php';
             $productName = mysqli_real_escape_string($this->db->link, $data['productName']);
             $category = mysqli_real_escape_string($this->db->link, $data['category']);
             $brand = mysqli_real_escape_string($this->db->link, $data['brand']);
+            $config = mysqli_real_escape_string($this->db->link, $data['config']);
+            $color = mysqli_real_escape_string($this->db->link, $data['color']);
             $product_desc = mysqli_real_escape_string($this->db->link, $data['product_desc']);
             $product_details = mysqli_real_escape_string($this->db->link, $data['product_details']);
             $price = mysqli_real_escape_string($this->db->link, $data['price']);
@@ -41,13 +43,13 @@ include_once '../helpers/format.php';
             $unique_image = substr(md5(time()),0,10).'.'.$file_name;
             $upload_image = "uploads/".$unique_image;
 
-            if ($productName ==""||$category ==""|| $brand ==""||$product_desc ==""||$product_details ==""|| $price ==""|| $Quanlity ==""||$warranty ==""||$VAT ==""||$status ==""||$file_name =="") {
+            if ($productName ==""||$category ==""|| $brand ==""|| $config ==""|| $color ==""||$product_desc ==""||$product_details ==""|| $price ==""|| $Quanlity ==""||$warranty ==""||$VAT ==""||$status ==""||$file_name =="") {
                 $alert = "Error: Information of fields must not be empty!";
                 return $alert;
             } else {
                 move_uploaded_file($file_temp,$upload_image);
                 $adminID = Session::get('adminID');
-                $sql = "INSERT INTO product(productName, Status, Img, Price, VAT, Quanlity, Warranty, Decription, Details, CreatedBy, CateID, brandID) VALUES ('$productName', '$status','$unique_image','$price','$VAT','$Quanlity','$warranty','$product_desc','$product_details','$adminID','$category','$brand')";
+                $sql = "INSERT INTO product(productName, Status, Img, Config, Color, Price, VAT, Quanlity, Warranty, Decription, Details, CreatedBy, CateID, brandID) VALUES ('$productName', '$status','$unique_image', '$config', '$color','$price','$VAT','$Quanlity','$warranty','$product_desc','$product_details','$adminID','$category','$brand')";
                 $result = $this->db->insert($sql);
 
                 if($result){
@@ -97,8 +99,8 @@ include_once '../helpers/format.php';
             else{
                 if(!empty($file_name)){
                     //nếu ng dùng chọn ảnh
-                    if($file_size>5120){
-                        $alert = "<span> File Image should be less than 5MB</span>";
+                    if($file_size>51200){
+                        $alert = "<span> File Image should be less than 50MB</span>";
                         return $alert;
                     }else if(in_array($file_ext, $permited)==false){
                         $alert ="<span> Uou can upload only:=".implode(',',$permited)." </span> ";
@@ -176,7 +178,7 @@ include_once '../helpers/format.php';
             $productID = $this->fm->validation($productID);
             $productID = mysqli_real_escape_string($this->db->link, $productID);
 
-            $sql = "DELETE FROM product WHERE CateID = '$productID'";
+            $sql = "DELETE FROM product WHERE ProductID = '$productID'";
             $result = $this->db->delete($sql);
             if($result){
                 $alert = "Success: Delete product successfully!";
@@ -186,6 +188,70 @@ include_once '../helpers/format.php';
                     $alert = "Failed: Delete product failed!";
                     return $alert;
                 }
+        }
+        // end back end
+        public function showNewProduct() {
+            $sql =
+            "SELECT * FROM product WHERE Status = '0'
+            ORDER BY ProductID DESC;";
+            // $sql = "SELECT * FROM product order by ProductID desc";
+            $result = $this->db->select($sql);
+            return $result;
+            
+        }
+        public function showNewProductLap() {
+            
+           
+            $sql =
+            "SELECT product.*, productcategory.cateName FROM product JOIN productcategory ON product.CateID = productcategory.CateID 
+            WHERE product.Status = '0' AND productcategory.cateName = 'LapTop'
+            ORDER BY product.ProductID DESC LIMIT 5;";
+            // $sql = "SELECT * FROM product order by ProductID desc";
+            $result = $this->db->select($sql);
+            return $result;
+            
+        }
+        public function showNewProductphone() {
+            
+           
+            $sql =
+            "SELECT product.*, productcategory.cateName FROM product JOIN productcategory ON product.CateID = productcategory.CateID 
+            WHERE product.Status = '0' AND productcategory.cateName = 'Smartphone'
+            ORDER BY product.ProductID DESC LIMIT 2;";
+            // $sql = "SELECT * FROM product order by ProductID desc";
+            $result = $this->db->select($sql);
+            return $result;
+            
+        }
+
+        public function showNewProductFollow($choose) {
+            $choose = $this->fm->validation($choose);
+           
+            $choose = mysqli_real_escape_string($this->db->link, $choose);
+           
+            $sql =
+            "SELECT product.*, productcategory.cateName FROM product JOIN productcategory ON product.CateID = productcategory.CateID 
+            WHERE productcategory.cateName = '$choose'
+            ORDER BY product.ProductID DESC LIMIT 4;";
+            // $sql = "SELECT * FROM product order by ProductID desc";
+            $result = $this->db->select($sql);
+            return $result;
+            
+        }
+        public function showProductDetailbyID($productID) {
+            $productID = $this->fm->validation($productID);
+           
+            $productID = mysqli_real_escape_string($this->db->link, $productID);
+           
+            $sql =
+            "SELECT product.*, productcategory.cateName, brand.brandName
+            FROM product INNER JOIN productcategory ON product.CateID = productcategory.CateID
+            INNER JOIN brand ON product.brandID = brand.brandID
+            WHERE product.ProductID = '$productID' LIMIT 1;";
+            // $sql = "SELECT * FROM product order by ProductID desc";
+            $result = $this->db->select($sql);
+            return $result;
+            
         }
     }
 ?>

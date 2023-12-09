@@ -207,75 +207,14 @@
         </div>
     </div>
 </div>
+<a href="#" class="back-to-top d-flex align-items-center justify-content-center">
+    <i class="bi bi-arrow-up-short">
+    </i>
+</a>
 <!-- END FOOTER -->
 
 <!-- BEGIN fast view of a product -->
-<div id="product-pop-up" style="display: none; width: 700px">
-    <div class="product-page product-pop-up">
-        <div class="row">
-            <div class="col-md-6 col-sm-6 col-xs-3">
-                <div class="product-main-image">
-                    <img src="assets/pages/img/products/model7.jpg" alt="Cool green dress with red bell"
-                        class="img-responsive" />
-                </div>
-                <div class="product-other-images">
-                    <a href="javascript:;" class="active"><img alt="Berry Lace Dress"
-                            src="assets/pages/img/products/model3.jpg" /></a>
-                    <a href="javascript:;"><img alt="Berry Lace Dress" src="assets/pages/img/products/model4.jpg" /></a>
-                    <a href="javascript:;"><img alt="Berry Lace Dress" src="assets/pages/img/products/model5.jpg" /></a>
-                </div>
-            </div>
-            <div class="col-md-6 col-sm-6 col-xs-9">
-                <h2>Cool green dress with red bell</h2>
-                <div class="price-availability-block clearfix">
-                    <div class="price">
-                        <strong><span>$</span>47.00</strong>
-                        <em>$<span>62.00</span></em>
-                    </div>
-                    <div class="availability">
-                        Availability: <strong>In Stock</strong>
-                    </div>
-                </div>
-                <div class="description">
-                    <p>
-                        Lorem ipsum dolor ut sit ame dolore adipiscing elit, sed nonumy
-                        nibh sed euismod laoreet dolore magna aliquarm erat volutpat
-                        Nostrud duis molestie at dolore.
-                    </p>
-                </div>
-                <div class="product-page-options">
-                    <div class="pull-left">
-                        <label class="control-label">Size:</label>
-                        <select class="form-control input-sm">
-                            <option>L</option>
-                            <option>M</option>
-                            <option>XL</option>
-                        </select>
-                    </div>
-                    <div class="pull-left">
-                        <label class="control-label">Color:</label>
-                        <select class="form-control input-sm">
-                            <option>Red</option>
-                            <option>Blue</option>
-                            <option>Black</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="product-page-cart">
-                    <div class="product-quantity">
-                        <input id="product-quantity" type="text" value="1" readonly name="product-quantity"
-                            class="form-control input-sm" />
-                    </div>
-                    <button class="btn btn-primary" type="submit">Add to cart</button>
-                    <a href="shop-item.html" class="btn btn-default">More details</a>
-                </div>
-            </div>
 
-            <div class="sticker sticker-sale"></div>
-        </div>
-    </div>
-</div>
-<!-- END fast view of a product -->
 
 <!-- Load javascripts at bottom, this will reduce page load time -->
 <!-- BEGIN CORE PLUGINS (REQUIRED FOR ALL PAGES) -->
@@ -313,7 +252,119 @@ jQuery(document).ready(function() {
     Layout.initNavScrolling();
 });
 </script>
+<script>
+$(document).ready(function() {
+    $('.rateit').rateit();
+});
+</script>
+
 <!-- END PAGE LEVEL JAVASCRIPTS -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Lắng nghe sự kiện thay đổi trong radio button
+    var radioButtonDeli = document.querySelectorAll('input[name="delivery-method"]');
+    var deliveryMethodLi = document.getElementById('delivery-method-li');
+
+    radioButtonDeli.forEach(function(radioButton) {
+        radioButton.addEventListener('change', function() {
+            // Lấy giá trị của radio button đã chọn
+            var selectedDeliveryMethod = document.querySelector(
+                'input[name="delivery-method"]:checked + label').textContent;
+
+            // Cập nhật nội dung trong <li>
+            deliveryMethodLi.querySelector('span').textContent =
+                selectedDeliveryMethod;
+        });
+    });
+});
+</script>
+<!-- js thay doi method payment -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Lắng nghe sự kiện thay đổi trong radio button
+    var radioButtons = document.querySelectorAll(
+        'input[name="pay-method"]');
+    var paymentMethodLi = document.getElementById('payment-method-li');
+
+    radioButtons.forEach(function(radioButton) {
+        radioButton.addEventListener('change', function() {
+            // Lấy giá trị của radio button đã chọn
+            var selectedPaymentMethod = document
+                .querySelector(
+                    'input[name="pay-method"]:checked + label'
+                ).textContent;
+
+            // Cập nhật nội dung trong <li>
+            paymentMethodLi.querySelector('span')
+                .textContent = selectedPaymentMethod;
+
+        });
+    });
+});
+</script>
+<!-- Đoạn mã JavaScript -->
+<script>
+// document.addEventListener('DOMContentLoaded', function() {
+//     var radioButtonDeli = document.querySelectorAll('input[name="delivery-method"]');
+//     var costInput = document.getElementById('ship-cost');
+
+//     radioButtonDeli.forEach(function(radioButton) {
+//         radioButton.addEventListener('change', function() {
+//             // Lấy giá trị của radio button đã chọn
+//             var selectedDeliveryMethod = document.querySelector(
+//                 'input[name="delivery-method"]:checked').value;
+
+//             // Thiết lập giá trị cho input hidden
+//             costInput.value = selectedDeliveryMethod;
+//         });
+//     });
+// });
+</script>
+<script>
+// document.addEventListener('DOMContentLoaded', function() {
+//     var radioButtonPay = document.querySelectorAll('input[name="pay-method"]');
+//     var costInputpay = document.getElementById('payment-method');
+
+//     radioButtonPay.forEach(function(radioButton) {
+//         radioButton.addEventListener('change', function() {
+//             // Lấy giá trị của radio button đã chọn
+//             var selectedPaymentMethod = document.querySelector(
+//                 'input[name="pay-method"]:checked').value;
+
+//             // Thiết lập giá trị cho input hidden
+//             costInputpay.value = selectedPaymentMethod;
+//         });
+//     });
+// });
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Lắng nghe sự kiện click trên nút có id là "back-to-previous"
+    document.getElementById('back-to-previous').addEventListener('click', function() {
+        // Quay lại trang trước đó
+        history.back();
+    });
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Lắng nghe sự kiện khi nhấn vào một mục trong dropdown menu
+    document.querySelectorAll('.dropdown-menu a[data-bs-toggle="collapse"]').forEach(function(element) {
+        element.addEventListener('click', function() {
+            // Ẩn tất cả các phần tử collapse trước khi hiển thị phần tử tương ứng
+            document.querySelectorAll('.collapse').forEach(function(collapseElement) {
+                collapseElement.classList.remove('show');
+            });
+
+            // Lấy ID của phần tử collapse tương ứng và hiển thị nó
+            var targetId = this.getAttribute('data-bs-target').substring(1);
+            document.getElementById(targetId).classList.add('show');
+        });
+    });
+});
+</script>
+<!-- end js -->
+
 </body>
 <!-- END BODY -->
 

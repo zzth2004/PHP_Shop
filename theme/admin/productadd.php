@@ -62,7 +62,7 @@
                                     if($catlist){
                                         while($result = $catlist->fetch_assoc()){
 
-                                     
+                                            $catName = $result['CateName'];
                                 ?>
 
                                 <option value="<?php echo $result['CateID'];?>"><?php echo $result['cateName'];?>
@@ -82,6 +82,7 @@
                             <select id="select" name="brand">
                                 <option>-------Select Brands--------</option>
                                 <?php 
+                                    
                                     $cat = new Brand();
                                     $catlist = $cat->showBrandList();
                                     if($catlist){
@@ -99,7 +100,23 @@
                             </select>
                         </td>
                     </tr>
-
+                    <tr>
+                        <td>
+                            <label>Product config</label>
+                        </td>
+                        <td>
+                            <input type="text" name="config" placeholder="Enter the configuation of product"
+                                class="medium">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>Product color</label>
+                        </td>
+                        <td>
+                            <input type="text" name="color" placeholder="Enter the color of product" class="medium">
+                        </td>
+                    </tr>
                     <tr>
                         <td style="vertical-align: top; padding-top: 9px;">
                             <label>Description</label>

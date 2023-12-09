@@ -49,33 +49,37 @@
                                     <p>Checkout Options:</p>
                                     <div class="radio-list">
                                         <label>
-                                            <input type="radio" name="account" value="register"> Register Account
+                                            <input type="radio" name="account" value="register"
+                                                onchange="toggleAccountPanel('register')"> Register Account
                                         </label>
                                         <label>
-                                            <input type="radio" name="account" value="guest"> Guest Checkout
+                                            <input type="radio" name="account" value="login"
+                                                onchange="toggleAccountPanel('login')"> Login Account
                                         </label>
                                     </div>
                                     <p>By creating an account you will be able to shop faster, be up to date on an
                                         order's status, and keep track of the orders you have previously made.</p>
-                                    <button class="btn btn-primary" type="submit" data-toggle="collapse"
-                                        data-parent="#checkout-page"
-                                        data-target="#payment-address-content">Continue</button>
                                 </div>
-                                <div class="col-md-6 col-sm-6">
+                                <!-- sksbc -->
+
+
+                                <!--  -->
+                                <div class="col-md-6 col-sm-6" id="target-div" style="display: none;">
                                     <h3>Returning Customer</h3>
-                                    <p>I am a returning customer.</p>
-                                    <form role="form" action="#">
+                                    <p>I am a registed customer.</p>
+                                    <form role="form" action="login.php" method="post">
                                         <div class="form-group">
-                                            <label for="email-login">E-Mail</label>
-                                            <input type="text" id="email-login" class="form-control">
+                                            <label for="usernameLabel">Username</label>
+                                            <input type="text" name="username" class="form-control">
                                         </div>
                                         <div class="form-group">
                                             <label for="password-login">Password</label>
-                                            <input type="password" id="password-login" class="form-control">
+                                            <input type="password" name="password" class="form-control">
                                         </div>
                                         <a href="javascript:;">Forgotten Password?</a>
                                         <div class="padding-top-20">
-                                            <button class="btn btn-primary" type="submit">Login</button>
+                                            <button class="btn btn-primary" type="submit"
+                                                name="submit_login">Login</button>
                                         </div>
                                         <hr>
                                         <div class="login-socio">
@@ -108,14 +112,15 @@
                                 </a>
                             </h2>
                         </div>
-                        <div id="payment-address-content" class="panel-collapse collapse">
-                            <div class="panel-body row">
-                                <div class="col-md-6 col-sm-6">
-                                    <h3>Your Personal Details</h3>
-                                    <form action="regis.php" method="post">
+                        <div id="payment-address-content" class="panel-collapse collapse" style="display: none;">
+                            <form action="" method="post">
+                                <div class="panel-body row">
+                                    <div class="col-md-6 col-sm-6">
+                                        <h3>Your Personal Details</h3>
+
                                         <div class="form-group">
                                             <label for="fullname">Full Name <span class="require">*</span></label>
-                                            <input type="text" id="fullname" name="fullname" class="form-control">
+                                            <input type="text" id="fullname" name="name" class="form-control">
                                         </div>
                                         <div class="form-group">
                                             <label for="email">E-Mail <span class="require">*</span></label>
@@ -125,100 +130,125 @@
                                             <label for="phone">Phone number <span class="require">*</span></label>
                                             <input type="text" id="telephone" name="phone" class="form-control">
                                         </div>
+                                        <div>
+                                            <h3>Account</h3>
+                                            <div class="form-group">
+                                                <label for="username">Username <span class="require">*</span></label>
+                                                <input type="text" id="username" name="username" class="form-control"
+                                                    required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="password">Password <span class="require">*</span></label>
+                                                <input type="password" id="password" name="password"
+                                                    class="form-control" oninput="checkPasswordMatch()" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="password-confirm">Password Confirm <span
+                                                        class="require">*</span></label>
+                                                <input type="password" id="password-confirm" name="password-confirm"
+                                                    class="form-control" oninput="checkPasswordMatch()" required>
+                                                <hr>
+                                                <p id="password-match-message" style="color: red;"></p>
+                                            </div>
 
-                                        <h3>Account</h3>
+                                            <!-- js kiểm tra mk = nhập lại mk -->
+                                            <script>
+                                            function checkPasswordMatch() {
+                                                var password = document.getElementById("password").value;
+                                                var confirmPassword = document.getElementById("password-confirm").value;
+                                                var message = document.getElementById("password-match-message");
+
+                                                if (password === confirmPassword) {
+                                                    message.innerHTML = "Passwords match!";
+                                                    message.style.color = "green";
+                                                } else {
+                                                    message.innerHTML = "Passwords do not match!";
+                                                    message.style.color = "red";
+                                                }
+                                            }
+                                            </script>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-sm-6">
+                                        <h3>Your Address</h3>
                                         <div class="form-group">
-                                            <label for="username">Username <span class="require">*</span></label>
-                                            <input type="text" id="username" name="username" class="form-control">
+                                            <label for="company">Number of House <span class="require">*</span></label>
+                                            <input type="text" name="numHouse" class="form-control">
                                         </div>
                                         <div class="form-group">
-                                            <label for="password">Password <span class="require">*</span></label>
-                                            <input type="password" id="password" name="password" class="form-control">
+                                            <label for="city">Street <span class="require">*</span></label>
+                                            <input type="text" name="street" class="form-control">
                                         </div>
                                         <div class="form-group">
-                                            <label for="password-confirm">Password Confirm <span
-                                                    class="require">*</span></label>
-                                            <input type="text" id="password-confirm" name="password-confirm"
-                                                class="form-control">
+                                            <label for="address2">Wards/Communes <span class="require">*</span></label>
+                                            <input type="text" name="commune" class="form-control">
                                         </div>
-                                </div>
-                                <div class="col-md-6 col-sm-6">
-                                    <h3>Your Address</h3>
-                                    <div class="form-group">
-                                        <label for="company">Number of House <span class="require">*</span></label>
-                                        <input type="text" id="company" class="form-control">
+
+                                        <div class="form-group">
+                                            <label for="address1">Province/City <span class="require">*</span></label>
+                                            <input type="text" name="city" class="form-control">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="country">Country <span class="require">*</span></label>
+                                            <select class="form-control input-sm" name="country" style="color: black;">
+                                                <option> --- Please Select --- </option>
+                                                <option value="Vietnam">Vietnam</option>
+                                                <option value="USA">USA</option>
+                                                <option value="England">England</option>
+                                            </select>
+                                        </div>
+                                        <!-- js hiển thị phần dki nếu nhấn vào đăng kí -->
+                                        <script>
+                                        function toggleAccountPanel(selectedValue) {
+                                            var accountFields = document.getElementById("account-fields");
+                                            var targetDiv = document.getElementById("target-div");
+                                            var targetDivRegis = document.getElementById("payment-address-content");
+                                            if (selectedValue === "login") {
+                                                // accountFields.style.display = "none";
+                                                targetDiv.style.display = "block";
+                                                targetDivRegis.style.display = "none";
+                                            } else {
+                                                // accountFields.style.display = "block";
+                                                targetDiv.style.display = "none";
+                                                targetDivRegis.style.display = "block";
+                                            }
+                                        }
+                                        </script>
+
                                     </div>
-                                    <div class="form-group">
-                                        <label for="address1">Province/City <span class="require">*</span></label>
-                                        <input type="text" id="address1" class="form-control">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="address2">Wards/Communes <span class="require">*</span></label>
-                                        <input type="text" id="address2" class="form-control">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="city">Street <span class="require">*</span></label>
-                                        <input type="text" id="city" class="form-control">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="country">Country <span class="require">*</span></label>
-                                        <select class="form-control input-sm" id="country">
-                                            <option value=""> --- Please Select --- </option>
-                                            <option value="244">Vietnam</option>
-                                            <option value="1">USA</option>
-                                            <option value="2">England</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="region-state">Area <span class="require">*</span></label>
-                                        <select class="form-control input-sm" id="region-state">
-                                            <option value=""> --- Please Select --- </option>
-                                            <option value="3513">Asian</option>
-                                            <option value="3514">US/UK</option>
-                                            <option value="3515">Africa</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="checkbox">
-                                        <label>
-                                            <input type="checkbox" checked="checked"> My delivery and billing addresses
-                                            are the same.
-                                        </label>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-lg-6 col-md-6 col-sm-6">
-                                            <button class="btn btn-primary  pull-left" type="submit"
-                                                data-toggle="collapse" data-parent="regis.php" data-target="regis.php"
-                                                id="button-regis">Register</button>
-                                            <div class="checkbox pull-left">
-                                                <label>
-                                                    <input type="checkbox"> I have read and agree to the <a
-                                                        title="Privacy Policy" href="javascript:;">Privacy Policy</a>
-                                                    &nbsp;&nbsp;&nbsp;
-                                                </label>
+                                    <div class="col-md-12">
+                                        <div class="checkbox">
+                                            <label>
+                                                <input type="checkbox" checked="checked"> My delivery and billing
+                                                addresses
+                                                are the same.
+                                            </label>
+                                        </div>
+                                        <div class="row">
+                                            <div>
+
+                                                <button class="btn btn-primary  pull-right" type="submit"
+                                                    name="submit_regist_full" data-toggle="collapse"
+                                                    data-toggle="collapse">Register</button>
+                                                <div class="checkbox pull-right">
+                                                    <label>
+                                                        <input type="checkbox"> I have read and agree to the <a
+                                                            title="Privacy Policy" href="javascript:;">Privacy
+                                                            Policy</a>
+                                                        &nbsp;&nbsp;&nbsp;
+                                                    </label>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                </form>
-                                <div>
-                                    <button class="btn btn-primary  pull-right" type="submit" data-toggle="collapse"
-                                        data-parent="#checkout-page" data-target="#confirm-content"
-                                        id="button-payment-address">Continue</button>
-                                    <div class="checkbox pull-right">
-                                        <label>
-                                            <input type="checkbox"> I have read and agree to the <a
-                                                title="Privacy Policy" href="javascript:;">Privacy Policy</a>
-                                            &nbsp;&nbsp;&nbsp;
-                                        </label>
-                                    </div>
-                                </div>
+                            </form>
 
-                                <hr>
 
-                            </div>
+                            <hr>
+
                         </div>
+
                     </div>
                     <!-- END PAYMENT ADDRESS -->
 

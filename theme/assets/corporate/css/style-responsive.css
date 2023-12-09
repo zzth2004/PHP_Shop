@@ -251,7 +251,10 @@
 	.nav-catalogue .product-item {
 		margin-bottom: 20px;
 	}
-
+	.product-item{
+		width: 220px !important;
+		height: 295px !important;
+	}
 	.header-navigation li.menu-search,
 	.ecommerce .header-navigation li.menu-search {
 		top: 0;
@@ -803,3 +806,4 @@
 	}
 }
 /* END max width 320px */
+/* card */

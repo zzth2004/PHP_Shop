@@ -891,17 +891,22 @@ div.radio.disabled span.checked, div.radio.disabled.active span.checked {
 	width: 100%;
 }
 .product-other-images {
-	text-align: left;
+	display: flex;
+
+	
 }
-.product-other-images img {
-	width: 20%;
-	height: 70px;
-	margin: 0 12px 12px 0;
+
+
+/* .product-other-images img {
+	width: 33.33%;
+	height: 120px;
+	margin: 0 12px 12px 12px;
 }
+  */
 .product-other-images a:hover img,
 .product-other-images a.active img {
 	box-shadow: 0 0 0 2px #c7ced5;
-}
+} 
 .product-page h1 {
 	border-bottom: 1px solid #f4f4f4;
 	padding-bottom: 12px;
@@ -957,7 +962,9 @@ div.radio.disabled span.checked, div.radio.disabled.active span.checked {
 .product-page-options .pull-left:last-child {
 	margin-right: 0;
 }
+
 .product-page-options label {
+	font-size: 20px;
 	font-weight: normal;
 	text-transform: uppercase;
 	color: #070707;
@@ -967,13 +974,29 @@ div.radio.disabled span.checked, div.radio.disabled.active span.checked {
 	margin-right: 10px;
 	padding-top: 2px;
 }
+#setsizeFont{
+	font-size: 18px;
+	display: inline;
+	margin-bottom: 15px;
+}
+#setsizeFont p{
+	margin-bottom: 20px;
+	padding: 0 20px;
+}
 .control-label{
 	font-weight: 600;
+	font-size: 16px;
+	
 }
 .product-page-options select.input-sm {
 	float: left;
 	width: auto;
 	height: 26px;
+}
+.showCat_Brand{
+	display: flex;
+	margin: 15px;
+	padding: 10px;
 }
 
 .product-page-cart {
@@ -1556,3 +1579,160 @@ Shop Stype Buttons
 	justify-content: center;
 	text-align: center;
 }
+#setstyle{
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 2rem;
+	font-weight: 600;
+}
+#content {
+	height: 100px;
+	overflow: hidden;
+  }
+  
+.hideContent {
+	height: 100px;
+	overflow: hidden;
+  }
+  
+.showContent {
+	height: auto;
+	overflow: auto;
+  }
+#button_group{
+	list-style: none;
+  }
+#button_group{
+	margin-left: 10px;
+	
+	text-align: center;
+	border-radius: 10px;
+}
+#button_group button{
+	width: 100px;
+	height: 35px;
+	border-radius: 10px;
+	box-shadow: #3e4d5c;
+}
+#button_group a{
+	text-decoration: none;
+	cursor: pointer;
+	width: 100px;
+	height: 35px;
+}
+#button_group a:hover button,
+#button_group a.active button {
+	box-shadow: 0 0 0 2px #c7ced5;
+}
+
+/* 88888888888888 */
+# Profie Page
+--------------------------------------------------------------*/
+.profile .profile-card img {
+  max-width: 120px;
+}
+
+.profile .profile-card h2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #2c384e;
+  margin: 10px 0 0 0;
+}
+
+.profile .profile-card h3 {
+  font-size: 18px;
+}
+
+.profile .profile-card .social-links a {
+  font-size: 20px;
+  display: inline-block;
+  color: rgba(1, 41, 112, 0.5);
+  line-height: 0;
+  margin-right: 10px;
+  transition: 0.3s;
+}
+
+.profile .profile-card .social-links a:hover {
+  color: #012970;
+}
+
+.profile .profile-overview .row {
+  margin-bottom: 20px;
+  font-size: 15px;
+}
+
+.profile .profile-overview .card-title {
+  color: #012970;
+}
+
+.profile .profile-overview .label {
+  font-weight: 600;
+  color: rgba(1, 41, 112, 0.6);
+}
+
+.profile .profile-edit label {
+  font-weight: 600;
+  color: rgba(1, 41, 112, 0.6);
+}
+
+.profile .profile-edit img {
+  max-width: 120px;
+}
+/* ------------- */
+/* Bordered Tabs */
+.nav-tabs-bordered {
+	border-bottom: 2px solid #ebeef4;
+  }
+  
+  .nav-tabs-bordered .nav-link {
+	margin-bottom: -2px;
+	border: none;
+	color: #2c384e;
+  }
+  
+  .nav-tabs-bordered .nav-link:hover,
+  .nav-tabs-bordered .nav-link:focus {
+	color: #4154f1;
+  }
+  
+  .nav-tabs-bordered .nav-link.active {
+	background-color: #fff;
+	color: #4154f1;
+	border-bottom: 2px solid #4154f1;
+  }
+/* Card */
+.card {
+	margin-bottom: 30px;
+	border: none;
+	border-radius: 5px;
+	box-shadow: 0px 0 30px rgba(1, 41, 112, 0.1);
+  }
+  
+  .card-header,
+  .card-footer {
+	border-color: #ebeef4;
+	background-color: #fff;
+	color: #798eb3;
+	padding: 15px;
+  }
+  
+  .card-title {
+	padding: 20px 0 15px 0;
+	font-size: 18px;
+	font-weight: 500;
+	color: #001539;
+	font-family: "Poppins", sans-serif;
+  }
+  
+  .card-title span {
+	color: #899bbd;
+	font-size: 14px;
+	font-weight: 400;
+  }
+  
+  .card-body {
+	padding: 0 20px 20px 20px;
+  }
+  
+  .card-img-overlay {
+	background-color: rgba(255, 255, 255, 0.6);
+  }

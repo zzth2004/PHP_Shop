@@ -1,34 +1,95 @@
-<?php
-session_start();
+<?php 
+    include './inc/header.php';  
 
 ?>
-<?php
-    if (isset($_POST['username']) && isset($_POST['password'])) {
-        $u = $_POST['username'];
-        $p = $_POST['password'];
-
-        if (empty($u) || empty($p)) {
-            echo "Dữ liệu rỗng, vui lòng nhập lại";
-        } else if (!preg_match("/^[a-zA-Z0-9]*$/", $u) || !preg_match("/^[a-zA-Z0-9]*$/", $p)) {
-            echo "Tên đăng nhập và mật khẩu chỉ chứa ký tự a-z, A-Z và 0-9, vui lòng nhập lại";
-        } else {
-            $conn = mysqli_connect("localhost", "root", "", "doan2");
-            $sql = "SELECT * FROM useraccount where username = '$u' AND password = '$p'";
-            $kq = mysqli_query($conn, $sql);
-            if ($kq->num_rows > 0) {
-                $_SESSION['loggedin'] = true;
-                $_SESSION['username'] = $u;
-                echo '<h2>Đăng nhập thành công</h2>';
-                echo '<h1>Xin chào '.$u.'</h1>';
-                 header('Location: shop-index-header-fix.html');
-                exit;
-            } else {
-                session_unset();
-                echo "Tên đăng nhập hoặc mật khẩu không đúng, vui lòng thử lại";
-            }
-            $conn->close();
-        }
-    } else {
-        echo "Vui lòng nhập lại";
+<?php 
+    $login_check =  CustomSession::get('Customer_login');
+    if($login_check){
+        echo '<script>window.location.href = "shop-payment.php"</script>';
     }
 ?>
+<script></script>
+<?php
+    
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        if(isset($_POST['submit_login'])){
+            $user = $_POST['username'];
+            $pass = md5($_POST['password']);
+            $login_check = $userAct->user_login($user, $pass);
+            if($login_check){
+                echo '
+                    <script>
+                        if (typeof window !== "undefined") {
+                            window.addEventListener("DOMContentLoaded", function() {
+                                var notification = "'. $login_check .'";
+                                if (notification !== "") {
+                                    alert(notification);
+                                    window.location.href = "index.php";
+                                   
+                                }else{
+                                    window.location.href = "404.php";
+                                
+                                }
+                            });
+                        }
+                    </script>
+                ';
+            }else{
+                echo 'Faild';
+            }
+            
+        }else if(isset($_POST['submit_regis'])){
+            $user = $_POST['username'];
+            $pass = md5($_POST['password']);
+            $email = $_POST['email'];
+            $name = $_POST['name'];
+           $regis = $userAct->user_regis($user, $pass, $email, $name);
+            if($regis){
+                echo '
+                    <script>
+                        if (typeof window !== "undefined") {
+                            window.addEventListener("DOMContentLoaded", function() {
+                                var notification = "'. $regis .'";
+                                if (notification !== "") {
+                                    
+                                    alert(notification);
+                                    window.location.href = "index.php";
+                                   
+                                }else{
+                                    window.location.href = "404.php";
+                                
+                                }
+                            });
+                        }
+                    </script>
+                ';
+            }
+        }    else if(isset($_POST['submit_regist_full'])){
+            $regisFull = $userAct->user_regisFull($_POST);
+            if($regisFull){
+                echo '
+                    <script>
+                        if (typeof window !== "undefined") {
+                            window.addEventListener("DOMContentLoaded", function() {
+                                var notification = "'. $regisFull .'";
+                                if (notification !== "") {
+                                    
+                                    alert(notification);
+                                    window.location.href = "shop-payment.php";
+                                   
+                                }else{
+                                    window.location.href = "404.php";
+                                
+                                }
+                            });
+                        }
+                    </script>
+                ';
+            }else{
+                echo 'Faild';
+            }
+        }
+    } 
+   
+?>
+<?php include './inc/footer.php'; ?>

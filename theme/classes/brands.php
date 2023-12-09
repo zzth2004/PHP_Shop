@@ -1,7 +1,7 @@
 <?php
-
-include_once '../lib/database.php';
-include_once '../helpers/format.php';
+$filepath = realpath(dirname(__FILE__));
+include_once ($filepath.'/../lib/database.php');
+include_once ($filepath.'/../helpers/format.php');
 
 
 ?>
@@ -75,6 +75,12 @@ include_once '../helpers/format.php';
             return $result;
             
         }
+        public function showBrandListLimit() {
+            $sql = "SELECT * FROM brand order by brandID desc LIMIT 5";
+            $result = $this->db->select($sql);
+            return $result;
+            
+        }
         public function findbyBrandID($brandID){
             $brandID = $this->fm->validation($brandID);
             $brandID = mysqli_real_escape_string($this->db->link, $brandID);
@@ -101,7 +107,29 @@ include_once '../helpers/format.php';
                     $alert = "Failed: Delete brands failed!";
                     return $alert;
                 }
-        }    
+        }  
+        public function showBrandfollowCatName($catName){
+            $catName = $this->fm->validation($catName);
+            $catName = mysqli_real_escape_string($this->db->link,$catName);
+
+            $sql = "SELECT brand.*, productcategory.cateName FROM brand JOIN productcategory ON brand.CateID = productcategory.CateID 
+            WHERE productcategory.cateName = '$catName'
+            ORDER BY brand.brandID DESC LIMIT 6 ;";
+
+            $result = $this->db->select($sql);
+            return $result;
+        }  
+        public function showBrandFollowCatLimit($catName){
+            $catName = $this->fm->validation($catName);
+            $catName = mysqli_real_escape_string($this->db->link,$catName);
+
+            $sql = "SELECT brand.*, productcategory.cateName FROM brand JOIN productcategory ON brand.CateID = productcategory.CateID 
+            WHERE productcategory.cateName = '$catName'
+            ORDER BY brand.brandID DESC LIMIT 2;";
+
+            $result = $this->db->select($sql);
+            return $result;
+        }  
     }
 
 ?>

@@ -1,14 +1,58 @@
 <?php
   include 'inc/header.php';
 ?>
+<?php 
+        
+        if(!isset($_GET['productID']) || $_GET['productID'] == NULL) {
+            echo " <script> window.location= '404.php'; </script>";
+        } else{
+            $productID = $_GET['productID'];
+            
+        }
+            if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit'])) {
+                
+                $quanlity = $_POST['quanlity'];
+                
+                $addToCart = $cart->add_cart($quanlity, $productID);
+                echo '
+                    <script>
+                        if (typeof window !== "undefined") {
+                            window.addEventListener("DOMContentLoaded", function() {
+                                var notification = "'. $addToCart .'";
+                                if (notification !== "") {
+                                    
+                                    alert(notification);
+                                    window.location.href = "shop-cart.php";
+                                   
+                                }else{
+                                    window.location.href = "404.php";
+                                
+                                }
+                            });
+                        }
+                    </script>
+                ';
+           }
+        
+
+    ?>
 
 
 <div class="main">
+
+
     <div class="container">
         <ul class="breadcrumb">
+            <?php 
+             $get_detail = $product->showProductDetailbyID($productID);
+             if($get_detail){
+                 while($result = $get_detail->fetch_assoc()){
+            ?>
             <li><a href="shop-index-header-fix.php">Home</a></li>
             <li><a href="">Store</a></li>
-            <li class="active">Laptop</li>
+            <li class="active"><?php echo $result['cateName']; 
+             $choose = $result['cateName'];?>
+            </li>
         </ul>
         <!-- BEGIN SIDEBAR & CONTENT -->
         <div class="row margin-bottom-40">
@@ -19,59 +63,82 @@
                     <div class="row flex">
                         <div class="col-md-6 col-sm-6">
                             <div class="product-main-image">
-                                <img src="assets/product_img/dell16.jpg" alt="SP" class="img-responsive"
-                                    data-BigImgsrc="assets/product_img/dell16.jpg">
+                                <img src="admin/uploads/<?php echo $result['Img'];  ?>" alt="SP" class="img-responsive"
+                                    data-BigImgsrc="admin/uploads/<?php echo $result['Img']  ?>">
                             </div>
-                            <div class="product-other-images">
-                                <a href="assets/product_img/dell16_1.jpg" class="fancybox-button" rel="photos-lib"><img
-                                        alt="dell16" src="assets/product_img/dell16_1.jpg"></a>
-                                <a href="assets/product_img/dell16_2.jpg" class="fancybox-button" rel="photos-lib"><img
-                                        alt="dell16" src="assets/product_img/dell16_2.jpg"></a>
-                                <a href="assets/product_img/dell16_3.png" class="fancybox-button" rel="photos-lib"><img
-                                        alt="dell16" src="assets/product_img/dell16_3.png"></a>
+                            <div class="product-other-images" style="display: flex;">
+                                <a href="admin/uploads/<?php echo $result['Img'];  ?>" class="fancybox-button"
+                                    rel="photos-lib"><img alt="dell16" width="100"
+                                        src="admin/uploads/<?php echo $result['Img'];  ?>"></a>
+                                <a href="admin/uploads/<?php echo $result['Img'];  ?>" class="fancybox-button"
+                                    rel="photos-lib"><img alt="dell16" width="100"
+                                        src="admin/uploads/<?php echo $result['Img'];  ?>"></a>
+                                <a href="admin/uploads/<?php echo $result['Img'];  ?>" class="fancybox-button"
+                                    rel="photos-lib"><img alt="dell16" width="100"
+                                        src="admin/uploads/<?php echo $result['Img'];  ?>"></a>
                             </div>
                         </div>
                         <div class="col-md-6 col-sm-6">
-                            <h1>Dell 16</h1>
+                            <h1 style="font-size: 25px; "><Strong><?php echo $result['productName'] ?></Strong></h1>
                             <div class="price-availability-block clearfix">
                                 <div class="price">
-                                    <strong><span>$</span>449.00</strong>
-                                    <em>$<span>699.00</span></em>
+                                    <strong><span>$</span><?php echo $result['Price'] ?></strong>
+                                    <em>$<span><?php echo $result['Price'] ?></span></em>
                                 </div>
-                                <!-- <div class="availability">
-                      Availability: <strong>In Stock</strong>
-                    </div> -->
+                                <div class="availability">
+                                    <strong>Quantity in Stock: </strong>
+                                    <Strong style="color: red; font-size: 16px;">
+                                        <?php echo $result['Quanlity'] ?>
+                                    </Strong>
+                                </div>
                             </div>
                             <div class="description">
-                                <p>Short description: This is the bestseller in this time! </p>
+                                <p style="font-size: 18px;"><Strong>Short description:</Strong>
+                                    <?php echo $result['Decription']; ?>! </p>
                             </div>
 
-                            <div class="product-page-options">
-                                <div class="pull-left">
-                                    <label class="control-label">Config:</label>
-                                    <select class="form-control input-sm">
-                                        <option>8/256 GB</option>
-                                        <option>16/512 GB</option>
-                                        <option>32 GB/ 1TB</option>
-                                    </select>
 
+                            <div id="setsizeFont" style="display: flex;">
+                                <label class="control-label" style="font-size: 18px;">Config:</label>
+                                <p style="font-size: 18px; margin-left: 30px;"><?php echo $result['Config']; ?></p>
+
+                            </div>
+                            <div id="setsizeFont" style="display: flex;">
+                                <label class="control-label" style="font-size: 18px;">Color:</label>
+                                <p style="font-size: 18px; margin-left: 30px;"><?php echo $result['Color']; ?></p>
+                            </div>
+                            <div class="showCat_Brand" style="display: flex;margin-bottom: 20px;">
+                                <div class="showCate" style="display: flex;">
+                                    <label class="control-label" style="font-size: 18px;">Categoty:</label>
+                                    <p style="font-size: 18px; margin-left: 15px; margin-right: 20px; color: brown;">
+                                        <?php echo $result['cateName']; ?>
+                                    </p>
                                 </div>
-                                <div class="pull-left">
-                                    <label class="control-label">Color:</label>
-                                    <select class="form-control input-sm">
-                                        <option>Dark-green</option>
-                                        <option>Blue</option>
-                                        <option>Black</option>
-                                    </select>
+                                <div class="showBrand" style="display: flex;">
+                                    <label class="control-label" style="font-size: 18px;">Brand:</label>
+                                    <p style="font-size: 18px; margin-left: 15px;color: brown;">
+                                        <?php echo $result['brandName']; ?>
+                                    </p>
                                 </div>
                             </div>
+                            <hr>
                             <div class="product-page-cart">
-                                <div class="product-quantity">
-                                    <input id="product-quantity" type="text" value="1" readonly
-                                        class="form-control input-sm">
-                                </div>
-                                <button class="btn btn-primary" type="submit">Add to cart => <i
-                                        class="fa fa-shopping-cart"></i></button>
+                                <form action="" method="post">
+                                    <div class="product-quantity">
+                                        <input id="product-quantity" type="number" name="quanlity" value="1" min="1"
+                                            max="<?php echo $result['Quanlity']; ?>" readonly
+                                            class="form-control input-sm">
+                                    </div>
+                                    <!-- <input type="submit" value="Add to cart" class="btn btn-primary"> -->
+                                    <button class="btn btn-primary" type="submit" name="submit">Add to cart => <i
+                                            class="fa fa-shopping-cart"></i></button>
+                                    <br><br>
+                                    <div><?php 
+                                        if(isset($addToCart)){
+                                            echo '<p style="font-size: 18px; color: red;" >'.$addToCart.' <p>';
+                                        }
+                                    ?></div>
+                                </form>
                             </div>
                             <div class="review">
                                 <input type="range" value="4" step="0.25" id="backing4">
@@ -91,39 +158,35 @@
 
                         <div class="product-page-content">
                             <ul id="myTab" class="nav nav-tabs">
-                                <li><a href="#Description" data-toggle="tab">Description</a></li>
+                                <li><a href="#<?php echo $result['ProductID']; ?>" data-toggle="tab">Product Details</a>
+                                </li>
                                 <li><a href="#Information" data-toggle="tab">Information</a></li>
                                 <li class="active"><a href="#Reviews" data-toggle="tab">Reviews (2)</a></li>
                             </ul>
                             <div id="myTabContent" class="tab-content">
-                                <div class="tab-pane fade" id="Description">
-                                    <p>Lorem ipsum dolor ut sit ame dolore adipiscing elit, sed sit nonumy nibh sed
-                                        euismod laoreet dolore magna aliquarm erat sit volutpat Nostrud duis molestie at
-                                        dolore. Lorem ipsum dolor ut sit ame dolore adipiscing elit, sed sit nonumy nibh
-                                        sed euismod laoreet dolore magna aliquarm erat sit volutpat Nostrud duis
-                                        molestie at dolore. Lorem ipsum dolor ut sit ame dolore adipiscing elit, sed sit
-                                        nonumy nibh sed euismod laoreet dolore magna aliquarm erat sit volutpat Nostrud
-                                        duis molestie at dolore. </p>
+                                <div class="tab-pane fade" id="<?php echo $result['ProductID']; ?>">
+                                    <?php echo $result['Details']; ?>
                                 </div>
+                                <!-- end js show more -->
                                 <div class="tab-pane fade" id="Information">
                                     <table class="datasheet">
                                         <tr>
                                             <th colspan="2">Additional features</th>
                                         </tr>
                                         <tr>
-                                            <td class="datasheet-features-type">Value 1</td>
+                                            <td class="datasheet-features-type">Monitor</td>
                                             <td>21 cm</td>
                                         </tr>
                                         <tr>
-                                            <td class="datasheet-features-type">Value 2</td>
+                                            <td class="datasheet-features-type">RAM</td>
                                             <td>700 gr.</td>
                                         </tr>
                                         <tr>
-                                            <td class="datasheet-features-type">Value 3</td>
+                                            <td class="datasheet-features-type">ROM</td>
                                             <td>10 person</td>
                                         </tr>
                                         <tr>
-                                            <td class="datasheet-features-type">Value 4</td>
+                                            <td class="datasheet-features-type">The battery</td>
                                             <td>14 cm</td>
                                         </tr>
                                         <tr>
@@ -182,11 +245,16 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="email">Rating</label>
-                                            <input type="range" value="4" step="0.25" id="backing5">
+                                            <input type="range" value="4" step="0.25" id="backing5"
+                                                class="rateit-range">
                                             <div class="rateit" data-rateit-backingfld="#backing5"
                                                 data-rateit-resetable="false" data-rateit-ispreset="true"
-                                                data-rateit-min="0" data-rateit-max="5">
-                                            </div>
+                                                data-rateit-min="0" data-rateit-max="5"></div>
+                                            <script>
+                                            $(document).ready(function() {
+                                                $('.rateit').rateit();
+                                            });
+                                            </script>
                                         </div>
                                         <div class="padding-top-20">
                                             <button type="submit" class="btn btn-primary">Send</button>
@@ -204,110 +272,48 @@
             <!-- END CONTENT -->
         </div>
         <!-- END SIDEBAR & CONTENT -->
-
+        <?php 
+                }
+            }
+        
+        
+?>
         <!-- BEGIN SIMILAR PRODUCTS -->
         <div class="row margin-bottom-40">
             <div class="col-md-12 col-sm-12">
-                <h2>Most popular products</h2>
+                <h2>Related product</h2>
                 <div class="owl-carousel owl-carousel4">
+                    <?php 
+                   
+                    $getProductfollow = $product->showNewProductFollow($choose);
+                    if($getProductfollow){
+                        while($rsFollow = $getProductfollow->fetch_assoc()){
+
+                    
+                    ?>
                     <div>
-                        <div class="product-item">
+                        <div class="product-item" style="height: 350px;width: 270px;">
                             <div class="pi-img-wrapper">
-                                <img src="assets/pages/img/products/k1.jpg" class="img-responsive"
-                                    alt="Berry Lace Dress">
+                                <img src="admin/uploads/<?php echo $rsFollow['Img'] ?>" class="img-responsive"
+                                    alt="<?php echo $rsFollow['productName'] ?>">
                                 <div>
-                                    <a href="assets/pages/img/products/k1.jpg"
+                                    <a href="admin/uploads/<?php echo $rsFollow['Img'] ?>"
                                         class="btn btn-default fancybox-button">Zoom</a>
-                                    <a href="#product-pop-up" class="btn btn-default fancybox-fast-view">View</a>
+                                    <a href="shop-item-details.php" class="btn btn-default fancybox-fast-view">View</a>
                                 </div>
                             </div>
-                            <h3><a href="shop-item.php">Berry Lace Dress</a></h3>
-                            <div class="pi-price">$29.00</div>
+                            <h3><a href="shop-item-details.php"><?php echo $rsFollow['productName'] ?></a></h3>
+                            <div class="pi-price"><?php echo $rsFollow['Price'] ?> <span style="color: red;">$</span>
+                            </div>
                             <a href="javascript:;" class="btn btn-default add2cart">Add to cart</a>
                             <div class="sticker sticker-new"></div>
                         </div>
                     </div>
-                    <div>
-                        <div class="product-item">
-                            <div class="pi-img-wrapper">
-                                <img src="assets/pages/img/products/k2.jpg" class="img-responsive"
-                                    alt="Berry Lace Dress">
-                                <div>
-                                    <a href="assets/pages/img/products/k2.jpg"
-                                        class="btn btn-default fancybox-button">Zoom</a>
-                                    <a href="#product-pop-up" class="btn btn-default fancybox-fast-view">View</a>
-                                </div>
-                            </div>
-                            <h3><a href="shop-item.php">Berry Lace Dress2</a></h3>
-                            <div class="pi-price">$29.00</div>
-                            <a href="javascript:;" class="btn btn-default add2cart">Add to cart</a>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="product-item">
-                            <div class="pi-img-wrapper">
-                                <img src="assets/pages/img/products/k3.jpg" class="img-responsive"
-                                    alt="Berry Lace Dress">
-                                <div>
-                                    <a href="assets/pages/img/products/k3.jpg"
-                                        class="btn btn-default fancybox-button">Zoom</a>
-                                    <a href="#product-pop-up" class="btn btn-default fancybox-fast-view">View</a>
-                                </div>
-                            </div>
-                            <h3><a href="shop-item.php">Berry Lace Dress3</a></h3>
-                            <div class="pi-price">$29.00</div>
-                            <a href="javascript:;" class="btn btn-default add2cart">Add to cart</a>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="product-item">
-                            <div class="pi-img-wrapper">
-                                <img src="assets/pages/img/products/k4.jpg" class="img-responsive"
-                                    alt="Berry Lace Dress">
-                                <div>
-                                    <a href="assets/pages/img/products/k4.jpg"
-                                        class="btn btn-default fancybox-button">Zoom</a>
-                                    <a href="#product-pop-up" class="btn btn-default fancybox-fast-view">View</a>
-                                </div>
-                            </div>
-                            <h3><a href="shop-item.php">Berry Lace Dress4</a></h3>
-                            <div class="pi-price">$29.00</div>
-                            <a href="javascript:;" class="btn btn-default add2cart">Add to cart</a>
-                            <div class="sticker sticker-sale"></div>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="product-item">
-                            <div class="pi-img-wrapper">
-                                <img src="assets/pages/img/products/k1.jpg" class="img-responsive"
-                                    alt="Berry Lace Dress">
-                                <div>
-                                    <a href="assets/pages/img/products/k1.jpg"
-                                        class="btn btn-default fancybox-button">Zoom</a>
-                                    <a href="#product-pop-up" class="btn btn-default fancybox-fast-view">View</a>
-                                </div>
-                            </div>
-                            <h3><a href="shop-item.php">Berry Lace Dress5</a></h3>
-                            <div class="pi-price">$29.00</div>
-                            <a href="javascript:;" class="btn btn-default add2cart">Add to cart</a>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="product-item">
-                            <div class="pi-img-wrapper">
-                                <img src="assets/pages/img/products/k2.jpg" class="img-responsive"
-                                    alt="Berry Lace Dress">
-                                <div>
-                                    <a href="assets/pages/img/products/k2.jpg"
-                                        class="btn btn-default fancybox-button">Zoom</a>
-                                    <a href="#product-pop-up" class="btn btn-default fancybox-fast-view">View</a>
-                                </div>
-                            </div>
-                            <h3><a href="shop-item.php">Berry Lace Dress6</a></h3>
-                            <div class="pi-price">$29.00</div>
-                            <a href="javascript:;" class="btn btn-default add2cart">Add to cart</a>
-                        </div>
-                    </div>
+                    <?php 
+                        }
+                    }
+                    ?>
+
                 </div>
             </div>
         </div>

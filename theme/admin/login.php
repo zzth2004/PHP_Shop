@@ -28,6 +28,19 @@ include '../classes/adminlogin.php';
                     <?php	
 						if(isset($login_check)){
 							echo $login_check;
+                            echo '
+                        <script>
+                            if (typeof window !== "undefined") {
+                                window.addEventListener("DOMContentLoaded", function() {
+                                    var notification = "'. $insertProduct .'";
+                                    if (notification !== "") {
+                                        alert(notification);
+                                        window.location.href = "productlist.php";
+                                    }
+                                });
+                            }
+                        </script>
+                        ';
 						}
 					 ?>
 
@@ -43,7 +56,7 @@ include '../classes/adminlogin.php';
                 </div>
             </form><!-- form -->
             <div class="button">
-                <a href="#">Training with live project</a>
+                <a href="#">Welcom PHP shop admin page</a>
             </div><!-- button -->
         </section><!-- content -->
     </div><!-- container -->

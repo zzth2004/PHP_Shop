@@ -1,3 +1,31 @@
+<?php 
+    include 'lib/session.php';
+    Session::init();
+?>
+<?php 
+    include_once 'lib/database.php';
+    include_once 'helpers/format.php';
+    include_once 'classes/brands.php';
+    spl_autoload_register(function($className){
+        include_once "classes/".$className.".php"; 
+    });
+       
+    $db = new Database();
+    $fm = new Format();
+    $cart = new Cart();
+    $user = new User();
+    $cat = new Category();
+    $product = new Product();
+    $userAct = new Userlogin();
+    
+?>
+
+<?php
+  header("Cache-Control: no-cache, must-revalidate");
+  header("Pragma: no-cache"); 
+  header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); 
+  header("Cache-Control: max-age=2592000");
+?>
 <!DOCTYPE html>
 
 <html lang="en">
@@ -54,6 +82,7 @@
     <link href="assets/corporate/css/custom.css" rel="stylesheet" />
     <!-- Theme styles END -->
     <!-- import file khác  -->
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <script src="../admin/ckeditor/ckeditor.js"></script>
 
@@ -97,12 +126,64 @@
                 <!-- BEGIN TOP BAR MENU -->
                 <div class="col-md-6 col-sm-6 additional-nav">
                     <ul class="list-unstyled list-inline pull-right">
-                        <li><a href="shop-account.php">My Account</a></li>
+
                         <li>
-                            <a href="shop-wishlist.php">My Cart||<i class="fa fa-shopping-cart"></i></a>
+                            <a href="shop-cart.php">My Cart||<i class="fa fa-shopping-cart"></i></a>
                         </li>
-                        <li><a href="shop-checkout.php">Checkout</a></li>
-                        <li><a href="login.php">Log In</a></li>
+                        <li>
+                            <a href="shop-contacts.php">Contacts</a>
+                        </li>
+                        <?php 
+                            $login_check =  CustomSession::get('Customer_login');
+                            if($login_check==false){
+                                echo '<li><a href="shop-checkout.php">Checkout</a></li>';
+                            }else{
+                                echo '<li><a href="shop-payment.php">Checkout</a></li>';
+                            }
+                        ?>
+
+                        <?php 
+                            if(isset($_GET['customer_id'])){
+                                $login_check =  CustomSession::get('Customer_login');
+                                if($login_check==true){
+                                    session_unset();
+                                    session_destroy();
+                                }else{
+                                    $del_all_cart_Session = $cart->del_all_cart_session();
+                                }
+                               
+                            //     echo '
+                            //     <script>
+                            //         if (typeof window !== "undefined") {
+                            //             window.addEventListener("DOMContentLoaded", function() {
+                            //                 var notification = "Logout Successfully!";
+                            //                 if (notification !== "") {
+                                                
+                            //                     alert(notification);
+                            //                     window.location.href = "login.html";
+                                            
+                            //                 }else{
+                            //                     window.location.href = "404.php";
+                                            
+                            //                 }
+                            //             });
+                            //         }
+                            //     </script>
+                            // ';
+                            } 
+                        ?>
+                        <?php 
+                        $login_check =  CustomSession::get('Customer_login');
+                        if($login_check==false){
+                            echo '<li><a href="login.html">Log In</a></li>';
+                        }else{
+                            echo '<li><a href="shop-account.php">
+                             <i class="fas fa-user-circle"></i>
+                            '.CustomSession::get('Name').' </a></li>';
+                            echo ' <li><a href="?customer_id='.CustomSession::get('userID').'">Logout</a></li>
+                            ';
+                        }
+                        ?>
                     </ul>
                 </div>
                 <!-- END TOP BAR MENU -->
@@ -121,25 +202,71 @@
             <!-- BEGIN CART -->
             <div class="top-cart-block">
                 <div class="top-cart-info">
-                    <a href="javascript:void(0);" class="top-cart-info-count">3 items</a>
+                    <a href="javascript:void(0);" class="top-cart-info-count">
+                        <?php 
+                        $login_check =  CustomSession::get('Customer_login');
+                        if($login_check==false){
+                            echo 'Empty';
+                        }else{
+                            $check_cart = $cart->check_cart();
+                            if($check_cart){
+                                $totalproduct = Session::get("totalproduct");
+                                echo $totalproduct;
+                            }
+                            else{
+                                echo 'Empty';
+                            }
+                        }
+                    ?>
+
+                        items</a>
                 </div>
                 <i class="fa fa-shopping-cart"></i>
 
                 <div class="top-cart-content-wrapper">
                     <div class="top-cart-content">
+
                         <ul class="scroller" style="height: 250px">
+                            <?php 
+                            $login_check =  CustomSession::get('Customer_login');
+                            if($login_check==false){
+                                echo '<p style="font-size: 2rem; text-align: center;">Empty Cart</p>';
+                            }else{ 
+                        $viewlittleCart = $cart->showcart();
+                        if($viewlittleCart){
+                            while($result = $viewlittleCart->fetch_assoc()){
+                                
+                        
+                        ?>
+
                             <li>
-                                <a href="shop-item.php"><img src="assets/pages/img/cart-img.jpg"
-                                        alt="Rolex Classic Watch" width="37" height="34" /></a>
-                                <span class="cart-content-count">x 1</span>
-                                <strong><a href="shop-item.php">Rolex Classic Watch</a></strong>
-                                <em>$1230</em>
+                                <input type="hidden" name="cartID" value="<?php echo $result['cartID']?>">
+                                <a href="shop-item-details.php"><img src="admin/uploads/<?php echo $result['Img']?>"
+                                        alt="<?php echo $result['productName']?>" width="37" height="34" /></a>
+                                <span class="cart-content-count"><?php echo $result['CartQuanlity']?></span>
+                                <strong><a href="shop-item-details.php"><?php echo $result['productName']?></a></strong>
+                                <em><?php echo $result['Price']?></em>
                                 <a href="javascript:void(0);" class="del-goods">&nbsp;</a>
                             </li>
+
+                            <?php 
+                            }
+                        }
+                    }
+                        ?>
                         </ul>
                         <div class="text-right">
-                            <a href="shop-shopping-cart.php" class="btn btn-default">View Cart</a>
-                            <a href="shop-checkout.php" class="btn btn-primary">Checkout</a>
+
+                            <?php 
+                           
+                            if($login_check==false){
+                                echo '<a href="shop-checkout.php" class="btn btn-primary">Checkout</a>';
+                            }else{
+                                echo '<a href="shop-cart.php" class="btn btn-default">View Cart</a>';
+                                echo '<a href="shop-payment.php" class="btn btn-primary">Checkout</a>';
+                            }
+                            ?>
+
                         </div>
                     </div>
                 </div>
@@ -408,42 +535,7 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="dropdown active">
-                        <a class="dropdown-toggle" data-toggle="dropdown" data-target="#" href="javascript:;">
-                            Pages
-                        </a>
 
-                        <ul class="dropdown-menu">
-                            <li><a href="shop-index.php">Home Default</a></li>
-                            <li class="active">
-                                <a href="shop-index-header-fix.php">Home Header Fixed</a>
-                            </li>
-                            <li>
-                                <a href="shop-index-light-footer.php">Home Light Footer</a>
-                            </li>
-                            <li><a href="shop-product-list.php">Product List</a></li>
-                            <li><a href="shop-search-result.php">Search Result</a></li>
-                            <li><a href="shop-item.php">Product Page</a></li>
-                            <li>
-                                <a href="shop-shopping-cart-null.php">Shopping Cart (Null Cart)</a>
-                            </li>
-                            <li><a href="shop-shopping-cart.php">Shopping Cart</a></li>
-                            <li><a href="shop-checkout.php">Checkout</a></li>
-                            <li><a href="shop-about.php">About</a></li>
-                            <li><a href="shop-contacts.php">Contacts</a></li>
-                            <li><a href="shop-account.php">My account</a></li>
-                            <li><a href="shop-wishlist.php">My Wish List</a></li>
-                            <li>
-                                <a href="shop-goods-compare.php">Product Comparison</a>
-                            </li>
-                            <li><a href="shop-standart-forms.php">Standart Forms</a></li>
-                            <li><a href="shop-faq.php">FAQ</a></li>
-                            <li><a href="shop-privacy-policy.php">Privacy Policy</a></li>
-                            <li>
-                                <a href="shop-terms-conditions-page.php">Terms &amp; Conditions</a>
-                            </li>
-                        </ul>
-                    </li>
                     <!-- BEGIN TOP SEARCH -->
                     <li class="menu-search">
                         <span class="sep"></span>
