@@ -130,6 +130,15 @@
                         </td>
                     </tr>
                     <tr>
+                        <td style="vertical-align: top; padding-top: 9px;">
+                            <label>Product Value</label>
+                        </td>
+                        <td>
+                            <textarea name="product_value" id="ckeditor2" class="tinymce" rows="10" cols="80"
+                                value="<?php echo $result_pro['ProductValue'] ; ?>"></textarea>
+                        </td>
+                    </tr>
+                    <tr>
                         <td>
                             <label>Price</label>
                         </td>

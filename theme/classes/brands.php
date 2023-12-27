@@ -119,6 +119,7 @@ include_once ($filepath.'/../helpers/format.php');
             $result = $this->db->select($sql);
             return $result;
         }  
+
         public function showBrandFollowCatLimit($catName){
             $catName = $this->fm->validation($catName);
             $catName = mysqli_real_escape_string($this->db->link,$catName);
@@ -130,6 +131,33 @@ include_once ($filepath.'/../helpers/format.php');
             $result = $this->db->select($sql);
             return $result;
         }  
+        public function showBrandfollowCatNameNoLimit($catName){
+            $catName = $this->fm->validation($catName);
+            $catName = mysqli_real_escape_string($this->db->link,$catName);
+
+            $sql = "SELECT brand.*, productcategory.cateName FROM brand JOIN productcategory ON brand.CateID = productcategory.CateID 
+            WHERE productcategory.cateName = '$catName'
+            ORDER BY brand.brandID DESC";
+
+            $result = $this->db->select($sql);
+            return $result;
+        }
+        public function showBrandListAsc(){
+            $sql = "SELECT * FROM brand order by brandID asc";
+            $result = $this->db->select($sql);
+            return $result;
+        }
+        public function getBrandsByCategory($categoryId){
+            $categoryId = $this->fm->validation($categoryId);
+            $categoryId = mysqli_real_escape_string($this->db->link,$categoryId);
+            $sql = "SELECT brand.* FROM brand JOIN productcategory ON brand.CateID = productcategory.CateID
+            WHERE productcategory.CateID ='$categoryId'
+            ORDER BY brand.brandID ASC";
+             $result = $this->db->select($sql);
+            return $result;
+        }
+
+
     }
 
 ?>

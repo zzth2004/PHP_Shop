@@ -64,30 +64,6 @@
                     </script>
                 ';
             }
-        }    else if(isset($_POST['submit_regist_full'])){
-            $regisFull = $userAct->user_regisFull($_POST);
-            if($regisFull){
-                echo '
-                    <script>
-                        if (typeof window !== "undefined") {
-                            window.addEventListener("DOMContentLoaded", function() {
-                                var notification = "'. $regisFull .'";
-                                if (notification !== "") {
-                                    
-                                    alert(notification);
-                                    window.location.href = "shop-payment.php";
-                                   
-                                }else{
-                                    window.location.href = "404.php";
-                                
-                                }
-                            });
-                        }
-                    </script>
-                ';
-            }else{
-                echo 'Faild';
-            }
         }
     } 
    

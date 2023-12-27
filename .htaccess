@@ -4,4 +4,4 @@ RewriteRule ^home$ /Web_project/Buoi3/dangnhap.php [NC,L,QSA]
 
 RewriteRule ^danh-muc/([0-9]*)$ /Web_project/Buoi3/DanhsachSP.php?iddm=$1 [NC,L,QSA]
 
-ErrorDocument 404 /Web_project/Buoi3/404.php
+

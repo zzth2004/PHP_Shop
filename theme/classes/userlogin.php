@@ -69,7 +69,7 @@ class Userlogin
                 return $alert;
             }else{
 
-            $sql = "INSERT INTO useraccount(SessionID, username, Upassword, Name, Email) VALUES ('$sID','$username', '$password', '$name','$email')";
+            $sql = "INSERT INTO useraccount(username, Upassword, Name, Email) VALUES ('$username', '$password', '$name','$email')";
             $result = $this->db->insert($sql);
 
             if ($result) {
@@ -119,7 +119,7 @@ class Userlogin
     public function user_regisFull($data){
             $sID = session_id();
             $username = mysqli_real_escape_string($this->db->link, $data['username']);
-            $password = mysqli_real_escape_string($this->db->link, $data['password']);
+            $password = mysqli_real_escape_string($this->db->link, md5($data['password']));
             $email = mysqli_real_escape_string($this->db->link, $data['email']);
             $phone = mysqli_real_escape_string($this->db->link, $data['phone']);
             $name = mysqli_real_escape_string($this->db->link, $data['name']);
@@ -127,10 +127,10 @@ class Userlogin
             $street = mysqli_real_escape_string($this->db->link, $data['street']);
             $commune = mysqli_real_escape_string($this->db->link, $data['commune']);
             $city = mysqli_real_escape_string($this->db->link, $data['city']);
-            $country = mysqli_real_escape_string($this->db->link, $data['co untry']);
+          
 
-            $address = $numHouse . ' '. $street . ', ' . $commune . ', ' . $city . ', ' . $country;
-            if ($username ==""||$password ==""|| $email ==""|| $phone ==""|| $name ==""||$numHouse ==""||$street ==""|| $commune ==""|| $city ==""||$country =="") {
+            $address = $numHouse . ' '. $street . ', ' . $commune . ', ' . $city;
+            if ($username ==""||$password ==""|| $email ==""|| $phone ==""|| $name ==""||$numHouse ==""||$street ==""|| $commune ==""|| $city =="") {
                 $alert = "Error: Information of fields must not be empty!";
                 return $alert;
             } else{
@@ -141,44 +141,25 @@ class Userlogin
                     return $alert;
                 }else{
                 
-                $sql = "INSERT INTO useraccount(SessionID, username, Upassword, Name, Email, Phone, Address) VALUES ('$sID','$username', '$password', '$name','$email','$phone','$address')";
+                $sql = "INSERT INTO useraccount(username, Upassword, Name, Email, Phone, Address) VALUES ('$username', '$password', '$name','$email','$phone','$address')";
                 $result = $this->db->insert($sql);
 
             if ($result) {
-                $alert = "Regis successfully!";
-                echo '
-                    <script>
-                        if (typeof window !== "undefined") {
-                            window.addEventListener("DOMContentLoaded", function() {
-                                var notification = "'.$alert .'";
-                                if (notification !== "") {
-                                    
-                                    alert(notification);
-                                    window.location.href = "login.html";
-                                }else{
-                                    window.location.href = "404.php";
-                                
-                                }
-                            });
-                        }
-                    </script>
-                ';
+                $sqlLog = "SELECT * FROM useraccount WHERE username = '$username' AND Upassword = '$password' LIMIT 1";
+                $resultLogCheck = $this->db->select($sqlLog);
 
-                // $sqlLog = "SELECT * FROM useraccount WHERE username = '$username' AND Upassword = '$password' LIMIT 1";
-                // $resultLogCheck = $this->db->select($sqlLog);
-
-                // if ($resultLogCheck != false) {
-                //     $value = $resultLogCheck->fetch_assoc();
-                //     CustomSession::set('login', true);
-                //     CustomSession::set('userID', $value['userID']);
-                //     CustomSession::set('username', $value['username']);
-                //     CustomSession::set('Name', $value['Name']);
-                //     $alert = "Login successfully!";
-                //     return $alert;
-                // } else {
-                //     $alert = "Invalid information! Please re-enter.";
-                //     return $alert;
-                // }
+                if ($resultLogCheck != false) {
+                    $value = $resultLogCheck->fetch_assoc();
+                    CustomSession::set('Customer_login', true);
+                    CustomSession::set('userID', $value['userID']);
+                    CustomSession::set('username', $value['username']);
+                    CustomSession::set('Name', $value['Name']);
+                    $alert = "Regis and Login successfully!";
+                    return $alert;
+                } else {
+                    $alert = "Invalid information! Please re-enter.";
+                    return $alert;
+                }
             } else {
                 $alert = "Invalid information! Please re-enter.";
                 return $alert;
@@ -209,6 +190,112 @@ class Userlogin
                 $alert = "Add information about dilivering faild";
                 return $alert;
             }
+    }
+    public function showInforUser(){
+        $userID = CustomSession::get('userID');
+        $sql= "SELECT * FROM useraccount WHERE userID = '$userID' LIMIT 1";
+        $result = $this->db->select($sql);
+        if($result){
+            
+            return $result;
+        }else{
+            $alert = "No one have this ID";
+            return $alert;
+        }
+    }
+    public function updateInfor($name, $phone, $email, $address){
+        $userID = CustomSession::get('userID');
+        $name = $this->fm->validation($name);
+        $phone = $this->fm->validation($phone);
+        $email = $this->fm->validation($email);
+        $address = $this->fm->validation($address);
+
+        $name = mysqli_real_escape_string($this->db->link, $name);
+        $phone = mysqli_real_escape_string($this->db->link,  $phone);
+        $email = mysqli_real_escape_string($this->db->link, $email);
+        $address = mysqli_real_escape_string($this->db->link,  $address);
+        
+        
+        
+        $sql = "UPDATE useraccount set 
+        Name = '$name',
+        Email = '$email',
+        Phone ='$phone',
+        Address = '$address'
+        WHERE userID = '$userID'
+        ";
+
+        $result = $this->db->update($sql);
+        if($result){
+            $alert = "Success: Change information of profile successfully";
+            return $alert;
+        }else{
+            $alert = "Faild: Change information of profile faild";
+            return $alert;
+        }
+    }
+    public function updatePass($password, $newpassword){
+        $userID = CustomSession::get('userID');
+        $password = $this->fm->validation($password);
+        $newpassword = $this->fm->validation($newpassword);
+
+        $password = mysqli_real_escape_string($this->db->link, $password);
+        $newpassword = mysqli_real_escape_string($this->db->link, $newpassword);
+        
+        $sql_check = "SELECT Upassword FROM useraccount WHERE userID ='$userID'";
+        $result_check = $this->db->select($sql_check)->fetch_assoc();
+        if($result_check){
+
+            
+            $passwordInTable = $result_check['Upassword'];
+
+            if($passwordInTable==$password){
+                $sql = "UPDATE useraccount SET 
+                    Upassword = '$newpassword'
+                    WHERE userID = '$userID'
+                    ";
+
+            $result = $this->db->update($sql);
+            if($result){
+                $alert = "Success: Change password successfully";
+                return $alert;
+            }else{
+                $alert = "Faild: Change password faild";
+                return $alert;
+            }
+            }else{
+                $alert = "Wrong password: You should re-enter correct password!";
+                return $alert;
+            }
+            
+            
+        }
+        
+        
+    }
+
+
+    // ve phan contact 
+    public function add_contact($name, $email, $mess){
+        $name = $this->fm->validation($name);
+        $email = $this->fm->validation($email);
+        $mess = $this->fm->validation($mess);
+        $name = mysqli_real_escape_string($this->db->link, $name);
+        $email = mysqli_real_escape_string($this->db->link, $email);
+        $mess = mysqli_real_escape_string($this->db->link, $mess);
+
+
+
+        $sql= "INSERT INTO contactinfor(email, Details, CreatedBy) VALUES ('$email', '$mess','$name')";
+        $result = $this->db->insert($sql);
+
+        if($result){
+            $alert = "Success: Send message successfully. Thank you for your contact. We will contact you soon!";
+                return $alert;
+        }else{
+                $alert = "Faild: Send message faild";
+                return $alert;
+        }
     }
 }
 ?>

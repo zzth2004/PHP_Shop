@@ -54,7 +54,7 @@
                             <label>Category</label>
                         </td>
                         <td>
-                            <select id="select" name="category">
+                            <select id="selectCategory" name="category">
                                 <option>-------Select Category--------</option>
                                 <?php 
                                     $cat = new Category();
@@ -79,7 +79,7 @@
                             <label>Brands</label>
                         </td>
                         <td>
-                            <select id="select" name="brand">
+                            <select id="selectBrand" name="brand">
                                 <option>-------Select Brands--------</option>
                                 <?php 
                                     
@@ -131,6 +131,15 @@
                         </td>
                         <td>
                             <textarea name="product_details" id="ckeditor1" class="tinymce" rows="10"
+                                cols="80"></textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="vertical-align: top; padding-top: 9px;">
+                            <label>Value configuation</label>
+                        </td>
+                        <td>
+                            <textarea name="product_value" id="ckeditor2" class="tinymce" rows="10"
                                 cols="80"></textarea>
                         </td>
                     </tr>

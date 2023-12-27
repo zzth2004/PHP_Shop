@@ -1,12 +1,13 @@
 <?php
-  include 'inc/header.php';
+include 'inc/header.php';
 ?>
 
-<?php 
+<?php
 
-    $login_check =  CustomSession::get('Customer_login');
-    if($login_check==false){
-        echo '
+$login_check =  CustomSession::get('Customer_login');
+$userID = CustomSession::get('userID');
+if ($login_check == false) {
+    echo '
         <script>
             if (typeof window !== "undefined") {
                 window.addEventListener("DOMContentLoaded", function() {
@@ -24,28 +25,76 @@
             }
         </script>
     ';
-    } else{
-        if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['confirmOder'])){
-                
-            echo '<pre>';
-            echo print_r($_POST);
-            echo '</pre>';
+} else {
+    // if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['confirmOder'])){
+
+
+    // }
+    if (isset($_GET['orderID']) && $_GET['orderID'] == 'order') {
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['confirm-submit'])) {
+            if ((!isset($_POST['delivery-method']) || $_POST['delivery-method'] == null) || (!isset($_POST['pay-method']) || $_POST['pay-method'] == null)) {
+                echo '
+                <script>
+                if (typeof window !== "undefined") {
+                    window.addEventListener("DOMContentLoaded", function() {
+                        var notification = "Please select a delivery and payment method";
+                        if (notification !== "") {
+                                            
+                            alert(notification);
+                            window.location.href = "shop-payment.php?method=buyallcart";
+                        }
+                        
+                    });
+                }
+                </script>
+                ';
+            } else {
+
+                $shipcost = $_POST['delivery-method'];
+                $pay_method = $_POST['pay-method'];
+                $insertOder = $cart->insertOder($userID, $shipcost, $pay_method);
+                if ($insertOder) {
+
+                    echo '
+                            <script>
+                                if (typeof window !== "undefined") {
+                                    window.addEventListener("DOMContentLoaded", function() {
+                                        var notification = "' . $insertOder . '";
+                                        if (notification !== "") {
+                                            
+                                            alert(notification);
+
+                                        }
+                                    });
+                                }
+                            </script>
+                        ';
+                    $del_all_cart_Session = $cart->del_all_cart_after_order();
+                    if ($del_all_cart_Session) {
+                        echo '<script>window.location.href = "shop-show-order.php";</script>';
+                    }
+                }
+            }
+
+            // $insertOder = $cart->insertOder($userID, $shipcost, $pay_method);
         }
     }
-    // else{
-    //     if ($_SERVER['REQUEST_METHOD'] == 'POST'){
-    //         if( isset($_POST['submit-method'])){
-    //             $deliveryMethod = isset($_POST['delivery-method']) ? $_POST['delivery-method'] : '';
-    //             $paymentMethod = isset($_POST['pay-method']) ? $_POST['pay-method'] : '';
-    //         }
-    //     } 
-    // }
+}
+// else{
+//     if ($_SERVER['REQUEST_METHOD'] == 'POST'){
+//         if( isset($_POST['submit-method'])){
+//             $deliveryMethod = isset($_POST['delivery-method']) ? $_POST['delivery-method'] : '';
+//             $paymentMethod = isset($_POST['pay-method']) ? $_POST['pay-method'] : '';
+//         }
+//     } 
+// }
 
 ?>
 
 <div class="main">
     <div class="container">
-        <ul class="breadcrumb">
+        <ul class="breadcrumb" style="font-size: 1.3rem;">
             <li><a href="index.php">Home</a></li>
             <li><a href="">Store</a></li>
             <li class="active">Payment</li>
@@ -72,26 +121,25 @@
                 <div class="panel-group checkout-page accordion scrollable" id="payment-page">
                     <div id="confirm" class="panel">
                         <div class="panel-heading">
-                            <h2 class="panel-title"
-                                style="height: 40px; padding: 10px 0; font-size: 20px; font-weight: bold;">Part 3:
+                            <h2 class="panel-title" style="height: 40px; padding: 10px 0; font-size: 20px; font-weight: bold;">Part 3:
                                 Confirm Order</h2>
                         </div>
                         <div id="confirm-content">
-                            <form action="" method="post">
+                            <form action="?orderID=order" method="post">
                                 <div class="panel-body row">
                                     <div class="col-lg-6 col-md-6 clearfix left-list-content">
                                         <div class="method-delivery">
                                             <p style="font-weight: bold">Step 1: Delivery method</p>
                                             <div class="method-delivery-item">
-                                                <input type="radio" name="delivery-method" value="10$">
+                                                <input type="radio" name="delivery-method" value="Stander">
                                                 <label for="">Standard (10$)</label>
                                             </div>
                                             <div class="method-delivery-item">
-                                                <input type="radio" name="delivery-method" value="15$">
+                                                <input type="radio" name="delivery-method" value="Express">
                                                 <label for="">Express(15$)</label>
                                             </div>
                                             <div class="method-delivery-item">
-                                                <input type="radio" name="delivery-method" value="8$">
+                                                <input type="radio" name="delivery-method" value="Post-office">
                                                 <label for="">Post office (8$)</label>
                                             </div>
                                         </div>
@@ -133,7 +181,7 @@
                                             </div>
                                             <div class="payment-group-input">
                                                 <div class="method-payment-item">
-                                                    <input type="radio" name="pay-method" value="pay-recived">
+                                                    <input type="radio" name="pay-method" value="pay-after-recived">
                                                     <label for="">Pay after receive</label>
                                                 </div>
                                             </div>
@@ -155,63 +203,102 @@
                                                 <th>Price</th>
                                                 <th>Total</th>
                                             </tr>
-                                            <?php 
-                                            $cartlistconfirm = $cart->showcart();
-                                            if($cartlistconfirm){
-                                                $subTotal = 0;
-                                                while($result= $cartlistconfirm->fetch_assoc()){
-                                                    
-                                            
-                                        ?>
-                                            <tr>
-                                                <td><?php echo $result['productName'] ?></td>
-                                                <td><?php echo $result['CartQuanlity'] ?></td>
-                                                <td><strong><span>$</span><?php echo $result['Price'] ?></strong></td>
-                                                <td><strong><span>$</span><?php $total = $result['CartQuanlity'] * $result['Price'];
-                                            echo $total;
-                                            ?></strong></td>
-                                            </tr>
-                                            <?php 
-                                        $subTotal += $total;
+                                            <?php
+                                            if (isset($_GET['method']) && $_GET['method'] != null) {
+                                                if ($_GET['method'] == 'buynow') {
+                                                    $cartlistconfirm = $cart->showcartBuyNow();
+                                                } else {
+                                                    $cartlistconfirm = $cart->showcart();
+                                                }
+
+
+                                                if ($cartlistconfirm) {
+                                                    $subTotal = 0;
+                                                    while ($result = $cartlistconfirm->fetch_assoc()) {
+
+
+                                            ?>
+                                                        <tr>
+                                                            <td><?php echo $result['productName'] ?></td>
+                                                            <td><?php echo $result['CartQuanlity'] ?></td>
+                                                            <td><strong><span>$</span><?php echo $result['Price'] ?></strong></td>
+                                                            <td><strong><span>$</span><?php $total = $result['CartQuanlity'] * $result['Price'];
+                                                                                        echo $total;
+                                                                                        ?></strong></td>
+                                                        </tr>
+                                                    <?php
+                                                        $subTotal += $total;
+                                                    }
+                                                }
+                                            } else {
+                                                $cartlistconfirm = $cart->showcart();
+                                                if ($cartlistconfirm) {
+                                                    $subTotal = 0;
+                                                    while ($result = $cartlistconfirm->fetch_assoc()) {
+
+
+                                                    ?>
+                                                        <tr>
+                                                            <td><?php echo $result['productName'] ?></td>
+                                                            <td><?php echo $result['CartQuanlity'] ?></td>
+                                                            <td><strong><span>$</span><?php echo $result['Price'] ?></strong></td>
+                                                            <td><strong><span>$</span><?php $total = $result['CartQuanlity'] * $result['Price'];
+                                                                                        echo $total;
+                                                                                        ?></strong></td>
+                                                        </tr>
+                                            <?php
+                                                        $subTotal += $total;
+                                                    }
                                                 }
                                             }
-                                        ?>
+                                            ?>
 
                                         </table>
                                         <div class="checkout-total-block" style="width: 300px;">
                                             <ul>
                                                 <li>
                                                     <em>Sub total</em>
-                                                    <input type="hidden" name="subtotal"
-                                                        value="<?php echo $subTotal; ?>">
-                                                    <strong
-                                                        class="price"><span>$</span><?php echo $subTotal; ?></strong>
+
+                                                    <strong class="price"><span>$</span><?php
+                                                                                        if ($subTotal != null) {
+                                                                                            echo $subTotal;
+                                                                                        } else {
+                                                                                            echo '0';
+                                                                                        }
+                                                                                        ?></strong>
                                                 </li>
 
 
                                                 <li>
                                                     <em>VAT (5%)</em>
 
-                                                    <strong class="price"><span>$</span><?php 
-                                                    $vatCost = $subTotal *5/100;
-                                                    echo $vatCost; ?></strong>
-                                                    <input type="hidden" name="VAT" value="<?php echo $vatCost; ?>">
+                                                    <strong class="price"><span>$</span><?php
+                                                                                        $vatCost = $subTotal * 5 / 100;
+                                                                                        if ($vatCost != null) {
+                                                                                            echo $vatCost;
+                                                                                        } else {
+                                                                                            echo '0';
+                                                                                        } ?></strong>
+
                                                 </li>
                                                 <li class="checkout-total-price">
                                                     <em>Total <span>(Without ship cost)</span></em>
-                                                    <strong
-                                                        class="price"><span>$</span><?php echo $subTotal+$vatCost; ?></strong>
+                                                    <strong class="price"><span>$</span><?php $totalall = $subTotal + $vatCost;
+                                                                                        if ($totalall != null) {
+                                                                                            echo  $totalall;
+                                                                                        } else {
+                                                                                            echo '0';
+                                                                                        }
+                                                                                        ?></strong>
                                                 </li>
-                                                <li id="delivery-method-li"
-                                                    style="justify-content: space-between; display: flex;">
+                                                <li id="delivery-method-li" style="justify-content: space-between; display: flex;">
                                                     <!-- <input type="hidden" name="ship-cost" id="ship-cost" value=""> -->
                                                     <p>Shipping method: </p>
                                                     <span style="color: brown; font-size: 14px;"> </span>
 
                                                     </strong>
                                                 </li>
-                                                <li id="payment-method-li"
-                                                    style="justify-content: space-between; display: flex;">
+                                                <li id="payment-method-li" style="justify-content: space-between; display: flex;">
                                                     <!-- <input type="hidden" name="payment-method" id="payment-method" -->
                                                     <!-- value=""> -->
                                                     <p>Payment method: </p>
@@ -221,11 +308,11 @@
                                             </ul>
                                         </div>
                                         <div class="clearfix"></div>
-                                        <button class="btn btn-primary pull-right" type="submit" name="confirmOder"
-                                            id="button-confirm">Confirm
-                                            Order</button>
-                                        <button type="button" id="back-to-previous"
-                                            class="btn btn-default pull-right margin-right-20">Cancel</button>
+                                        <!-- <a style="color: #fff; text-decoration: none;" href="?orderID=order"><button
+                                                class="btn btn-primary pull-right" type="submit" name="confirm-submit"
+                                                id="button-confirm">Confirm Order</button></a> -->
+                                        <button class="btn btn-primary pull-right" type="submit" name="confirm-submit" id="button-confirm">Confirm Order</button>
+                                        <button type="button" id="back-to-previous" class="btn btn-default pull-right margin-right-20">Cancel</button>
                                     </div>
                                 </div>
                             </form>
@@ -240,5 +327,5 @@
         </div>
     </div>
     <?php
-      include 'inc/footer.php';
+    include 'inc/footer.php';
     ?>

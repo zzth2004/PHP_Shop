@@ -1,4 +1,5 @@
 <!-- BEGIN STEPS -->
+<hr>
 <div class="steps-block steps-block-red">
     <div class="container">
         <div class="row">
@@ -226,6 +227,7 @@
 <script src="assets/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
 <script src="assets/corporate/scripts/back-to-top.js" type="text/javascript"></script>
 <script src="assets/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script>
+<script src="assets/plugins/rateit/src/jquery.rateit.js" type="text/javascript"></script>
 <!-- END CORE PLUGINS -->
 
 <!-- BEGIN PAGE LEVEL JAVASCRIPTS (REQUIRED ONLY FOR CURRENT PAGE) -->
@@ -252,11 +254,41 @@ jQuery(document).ready(function() {
     Layout.initNavScrolling();
 });
 </script>
+
+<!-- js kiểm tra mk = nhập lại mk -->
 <script>
-$(document).ready(function() {
-    $('.rateit').rateit();
-});
+function checkPasswordMatch() {
+    var password = document.getElementById("password").value;
+    var confirmPassword = document.getElementById("password-confirm").value;
+    var message = document.getElementById("password-match-message");
+
+    if (password === confirmPassword) {
+        message.innerHTML = "Passwords match!";
+        message.style.color = "green";
+    } else {
+        message.innerHTML = "Passwords do not match!";
+        message.style.color = "red";
+    }
+}
 </script>
+<!-- js hiển thị phần dki nếu nhấn vào đăng kí -->
+<script>
+function toggleAccountPanel(selectedValue) {
+    var accountFields = document.getElementById("account-fields");
+    var targetDiv = document.getElementById("target-div");
+    var targetDivRegis = document.getElementById("payment-address-content");
+    if (selectedValue === "login") {
+        // accountFields.style.display = "none";
+        targetDiv.style.display = "block";
+        targetDivRegis.style.display = "none";
+    } else {
+        // accountFields.style.display = "block";
+        targetDiv.style.display = "none";
+        targetDivRegis.style.display = "block";
+    }
+}
+</script>
+
 
 <!-- END PAGE LEVEL JAVASCRIPTS -->
 <script>
@@ -339,6 +371,30 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Lấy danh sách các phần tử dropdown
+    var dropdownItems = document.querySelectorAll('.dropdown-menu .list-group-item');
+
+    // Thêm sự kiện click cho mỗi phần tử
+    dropdownItems.forEach(function(item) {
+        item.addEventListener('click', function() {
+            // Lấy giá trị từ data-bs-target
+            var targetId = this.querySelector('.accordion-toggle').dataset.bsTarget;
+
+            // Ẩn tất cả các tab-pane
+            var tabPanes = document.querySelectorAll('.tab-pane');
+            tabPanes.forEach(function(pane) {
+                pane.classList.remove('show', 'active');
+            });
+
+            // Hiện tab-pane tương ứng với giá trị data-bs-target
+            var targetPane = document.querySelector(targetId);
+            targetPane.classList.add('show', 'active');
+        });
+    });
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
     // Lắng nghe sự kiện click trên nút có id là "back-to-previous"
     document.getElementById('back-to-previous').addEventListener('click', function() {
         // Quay lại trang trước đó
@@ -360,6 +416,83 @@ document.addEventListener('DOMContentLoaded', function() {
             var targetId = this.getAttribute('data-bs-target').substring(1);
             document.getElementById(targetId).classList.add('show');
         });
+    });
+});
+</script>
+
+
+<!--js rateit -->
+<script>
+function remove_background(product_id) {
+    for (var count = 1; count <= 5; count++) {
+        $('#' + product_id + '-' + count).css('color', '#ccc');
+    }
+}
+//hover chuột đánh giá sao
+$(document).on('mouseenter', '.rating', function() {
+    var index = $(this).data("index"); //3
+    var product_id = $(this).data('product_id'); //13
+
+    // alert(index);
+    // alert(product_id);
+    remove_background(product_id);
+    for (var count = 1; count <= index; count++) {
+        $('#' + product_id + '-' + count).css('color', '#ffcc00');
+    }
+});
+//nhả chuột ko đánh giá
+$(document).on('mouseleave', '.rating', function() {
+    var index = $(this).data("index");
+    var product_id = $(this).data('product_id');
+    var rating = $(this).data("rating");
+    remove_background(product_id);
+    //alert(rating);
+    for (var count = 1; count <= rating; count++) {
+        $('#' + product_id + '-' + count).css('color', '#ffcc00');
+    }
+});
+</script>
+<!-- <script>
+$('.rating').click(function() {
+    var index = $(this).data("index"); //3
+    var product_id = $(this).data('product_id');
+    var customer_id = $(this).data('customer_id');
+    $.ajax({
+        url: 'ajax/rating.php',
+        data: {
+            index: index,
+            product_id: product_id,
+            customer_id: customer_id
+        },
+        type: 'POST',
+        success: function(data) {
+
+            alert('Đánh giá ' + index + ' sao thành công');
+
+
+
+        }
+    });
+})
+$(document).on('mouseenter', '.rating_login', function() {
+    alert('Làm ơn đăng nhập để đánh giá sao.');
+})
+</script> -->
+<script src="../script-comment.js"></script>
+<!-- lấy index trong selected rate -->
+<script>
+$(document).ready(function() {
+    // Bắt sự kiện khi người dùng chọn một rating
+    $('.rating').click(function() {
+        $('.rating').removeClass('selected');
+        $(this).addClass('selected');
+
+        // Lấy giá trị data-index từ rating đã chọn
+        var index = $(this).data("index");
+
+        // Thêm giá trị selectedIndex vào thẻ span
+        $('#ratedMessage').text('You have rated ' + index +
+            ' stars');
     });
 });
 </script>

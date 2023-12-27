@@ -2,11 +2,70 @@
   include 'inc/header.php';
  
 ?>
-
+<?php
+    if($_SERVER['REQUEST_METHOD'] == 'POST'){
+     if(isset($_POST['submit_regist_full'])){
+        $regisFull = $userAct->user_regisFull($_POST);
+        $userID = CustomSession::get('userID');
+        $sID = session_id();
+        $update_cart = $cart->update_cart($sID, $userID);
+        if($regisFull){
+            echo '
+                <script>
+                    if (typeof window !== "undefined") {
+                        window.addEventListener("DOMContentLoaded", function() {
+                            var notification = "'. $regisFull .'";
+                            if (notification !== "") {
+                                
+                                alert(notification);
+                                window.location.href = "shop-payment.php";
+                               
+                            }else{
+                                window.location.href = "404.php";
+                            
+                            }
+                        });
+                    }
+                </script>
+            ';
+        }else{
+            echo 'Faild';
+        }
+    }if(isset($_POST['submit_login'])){
+        $user = $_POST['username'];
+            $pass = md5($_POST['password']);
+            $login_check = $userAct->user_login($user, $pass);
+            $userID = CustomSession::get('userID');
+            $sID = session_id();
+            $update_cart = $cart->update_cart($sID, $userID);
+            if($login_check){
+                echo '
+                    <script>
+                        if (typeof window !== "undefined") {
+                            window.addEventListener("DOMContentLoaded", function() {
+                                var notification = "'. $login_check .'";
+                                if (notification !== "") {
+                                    alert(notification);
+                                    window.location.href = "shop-payment.php";
+                                   
+                                }else{
+                                    window.location.href = "404.php";
+                                
+                                }
+                            });
+                        }
+                    </script>
+                ';
+            }else{
+                echo 'Faild';
+            }
+    }
+}
+?>
 
 <div class="main">
     <div class="container">
-        <ul class="breadcrumb">
+        <ul class="breadcrumb" style="font-size: 1.3rem;">
             <li><a href="index.php">Home</a></li>
             <li><a href="">Store</a></li>
             <li class="active">Checkout</li>
@@ -67,7 +126,7 @@
                                 <div class="col-md-6 col-sm-6" id="target-div" style="display: none;">
                                     <h3>Returning Customer</h3>
                                     <p>I am a registed customer.</p>
-                                    <form role="form" action="login.php" method="post">
+                                    <form role="form" action="" method="post">
                                         <div class="form-group">
                                             <label for="usernameLabel">Username</label>
                                             <input type="text" name="username" class="form-control">
@@ -113,22 +172,23 @@
                             </h2>
                         </div>
                         <div id="payment-address-content" class="panel-collapse collapse" style="display: none;">
-                            <form action="" method="post">
+                            <form action="" method="post" enctype="multipart/form-data">
                                 <div class="panel-body row">
                                     <div class="col-md-6 col-sm-6">
                                         <h3>Your Personal Details</h3>
 
                                         <div class="form-group">
                                             <label for="fullname">Full Name <span class="require">*</span></label>
-                                            <input type="text" id="fullname" name="name" class="form-control">
+                                            <input type="text" id="fullname" name="name" class="form-control" required>
                                         </div>
                                         <div class="form-group">
                                             <label for="email">E-Mail <span class="require">*</span></label>
-                                            <input type="text" id="email" name="email" class="form-control">
+                                            <input type="text" id="email" name="email" class="form-control" required>
                                         </div>
                                         <div class="form-group">
                                             <label for="phone">Phone number <span class="require">*</span></label>
-                                            <input type="text" id="telephone" name="phone" class="form-control">
+                                            <input type="text" id="telephone" name="phone" class="form-control"
+                                                required>
                                         </div>
                                         <div>
                                             <h3>Account</h3>
@@ -151,86 +211,36 @@
                                                 <p id="password-match-message" style="color: red;"></p>
                                             </div>
 
-                                            <!-- js kiểm tra mk = nhập lại mk -->
-                                            <script>
-                                            function checkPasswordMatch() {
-                                                var password = document.getElementById("password").value;
-                                                var confirmPassword = document.getElementById("password-confirm").value;
-                                                var message = document.getElementById("password-match-message");
 
-                                                if (password === confirmPassword) {
-                                                    message.innerHTML = "Passwords match!";
-                                                    message.style.color = "green";
-                                                } else {
-                                                    message.innerHTML = "Passwords do not match!";
-                                                    message.style.color = "red";
-                                                }
-                                            }
-                                            </script>
                                         </div>
                                     </div>
                                     <div class="col-md-6 col-sm-6">
                                         <h3>Your Address</h3>
                                         <div class="form-group">
                                             <label for="company">Number of House <span class="require">*</span></label>
-                                            <input type="text" name="numHouse" class="form-control">
+                                            <input type="text" name="numHouse" class="form-control" required>
                                         </div>
                                         <div class="form-group">
                                             <label for="city">Street <span class="require">*</span></label>
-                                            <input type="text" name="street" class="form-control">
+                                            <input type="text" name="street" class="form-control" required>
                                         </div>
                                         <div class="form-group">
                                             <label for="address2">Wards/Communes <span class="require">*</span></label>
-                                            <input type="text" name="commune" class="form-control">
+                                            <input type="text" name="commune" class="form-control" required>
                                         </div>
 
                                         <div class="form-group">
                                             <label for="address1">Province/City <span class="require">*</span></label>
-                                            <input type="text" name="city" class="form-control">
+                                            <input type="text" name="city" class="form-control" required>
                                         </div>
-
-                                        <div class="form-group">
-                                            <label for="country">Country <span class="require">*</span></label>
-                                            <select class="form-control input-sm" name="country" style="color: black;">
-                                                <option> --- Please Select --- </option>
-                                                <option value="Vietnam">Vietnam</option>
-                                                <option value="USA">USA</option>
-                                                <option value="England">England</option>
-                                            </select>
-                                        </div>
-                                        <!-- js hiển thị phần dki nếu nhấn vào đăng kí -->
-                                        <script>
-                                        function toggleAccountPanel(selectedValue) {
-                                            var accountFields = document.getElementById("account-fields");
-                                            var targetDiv = document.getElementById("target-div");
-                                            var targetDivRegis = document.getElementById("payment-address-content");
-                                            if (selectedValue === "login") {
-                                                // accountFields.style.display = "none";
-                                                targetDiv.style.display = "block";
-                                                targetDivRegis.style.display = "none";
-                                            } else {
-                                                // accountFields.style.display = "block";
-                                                targetDiv.style.display = "none";
-                                                targetDivRegis.style.display = "block";
-                                            }
-                                        }
-                                        </script>
 
                                     </div>
                                     <div class="col-md-12">
-                                        <div class="checkbox">
-                                            <label>
-                                                <input type="checkbox" checked="checked"> My delivery and billing
-                                                addresses
-                                                are the same.
-                                            </label>
-                                        </div>
                                         <div class="row">
                                             <div>
 
                                                 <button class="btn btn-primary  pull-right" type="submit"
-                                                    name="submit_regist_full" data-toggle="collapse"
-                                                    data-toggle="collapse">Register</button>
+                                                    name="submit_regist_full">Register</button>
                                                 <div class="checkbox pull-right">
                                                     <label>
                                                         <input type="checkbox"> I have read and agree to the <a

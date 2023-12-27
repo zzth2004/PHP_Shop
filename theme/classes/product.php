@@ -16,7 +16,7 @@ include_once ($filepath.'/../helpers/format.php');
             $this->db = new Database();
             $this->fm = new Format();
         }
-
+// admin use
         public function add_product($data, $files)
         {
             
@@ -27,6 +27,7 @@ include_once ($filepath.'/../helpers/format.php');
             $color = mysqli_real_escape_string($this->db->link, $data['color']);
             $product_desc = mysqli_real_escape_string($this->db->link, $data['product_desc']);
             $product_details = mysqli_real_escape_string($this->db->link, $data['product_details']);
+            $productValue = mysqli_real_escape_string($this->db->link, $data['product_value']);
             $price = mysqli_real_escape_string($this->db->link, $data['price']);
             $Quanlity = mysqli_real_escape_string($this->db->link, $data['Quanlity']);
             $warranty = mysqli_real_escape_string($this->db->link, $data['warranty']);
@@ -43,13 +44,13 @@ include_once ($filepath.'/../helpers/format.php');
             $unique_image = substr(md5(time()),0,10).'.'.$file_name;
             $upload_image = "uploads/".$unique_image;
 
-            if ($productName ==""||$category ==""|| $brand ==""|| $config ==""|| $color ==""||$product_desc ==""||$product_details ==""|| $price ==""|| $Quanlity ==""||$warranty ==""||$VAT ==""||$status ==""||$file_name =="") {
+            if ($productName ==""||$category ==""|| $brand ==""|| $config ==""|| $color ==""||$product_desc ==""||$product_details ==""||$productValue==""|| $price ==""|| $Quanlity ==""||$warranty ==""||$VAT ==""||$status ==""||$file_name =="") {
                 $alert = "Error: Information of fields must not be empty!";
                 return $alert;
             } else {
                 move_uploaded_file($file_temp,$upload_image);
                 $adminID = Session::get('adminID');
-                $sql = "INSERT INTO product(productName, Status, Img, Config, Color, Price, VAT, Quanlity, Warranty, Decription, Details, CreatedBy, CateID, brandID) VALUES ('$productName', '$status','$unique_image', '$config', '$color','$price','$VAT','$Quanlity','$warranty','$product_desc','$product_details','$adminID','$category','$brand')";
+                $sql = "INSERT INTO product(productName, Status, Img, Config, Color, Price, VAT, Quanlity, Warranty, Decription, Details, ProductValue, CreatedBy, CateID, brandID) VALUES ('$productName', '$status','$unique_image', '$config', '$color','$price','$VAT','$Quanlity','$warranty','$product_desc','$product_details', '$productValue','$adminID','$category','$brand')";
                 $result = $this->db->insert($sql);
 
                 if($result){
@@ -76,6 +77,7 @@ include_once ($filepath.'/../helpers/format.php');
             $category = mysqli_real_escape_string($this->db->link, $data['category']);
             $brand = mysqli_real_escape_string($this->db->link, $data['brand']);
             $product_details = mysqli_real_escape_string($this->db->link, $data['product_details']);
+            $productValue = mysqli_real_escape_string($this->db->link, $data['product_value']);
             $price = mysqli_real_escape_string($this->db->link, $data['price']);
             $Quanlity = mysqli_real_escape_string($this->db->link, $data['Quanlity']);
             $warranty = mysqli_real_escape_string($this->db->link, $data['warranty']);
@@ -116,6 +118,7 @@ include_once ($filepath.'/../helpers/format.php');
                     Quanlity='$Quanlity',
                     Warranty='$warranty',
                     Details='$product_details',
+                    ProductValue = '$productValue',
                     CateID='$category',
                     brandID='$brand',
                     UpdateBy ='$adminID',
@@ -131,6 +134,7 @@ include_once ($filepath.'/../helpers/format.php');
                     Quanlity='$Quanlity',
                     Warranty='$warranty',
                     Details='$product_details',
+                    ProductValue = '$productValue',
                     CateID='$category',
                     brandID='$brand',
                     UpdateBy ='$adminID',
@@ -190,6 +194,9 @@ include_once ($filepath.'/../helpers/format.php');
                 }
         }
         // end back end
+
+    //end admin
+    //user see
         public function showNewProduct() {
             $sql =
             "SELECT * FROM product WHERE Status = '0'
@@ -253,5 +260,127 @@ include_once ($filepath.'/../helpers/format.php');
             return $result;
             
         }
+        public function showAllProduct(){
+            $sql =
+            "SELECT * FROM product  
+            ORDER BY ProductID DESC;";
+            // $sql = "SELECT * FROM product order by ProductID desc";
+            $result = $this->db->select($sql);
+            return $result;
+        }
+        public function showAllProductFollowBy($catName){
+            $catName = $this->fm->validation($catName);
+            $catName = mysqli_real_escape_string($this->db->link, $catName);
+
+            $sql_check = "SELECT * FROM productcategory WHERE cateName = '$catName' LIMIT 1";
+            $result_check = $this->db->select($sql_check);
+            if ($result_check != false){
+                $value = $result_check->fetch_assoc();
+                $cateID = $value['CateID'];
+            }
+            $sql =
+            "SELECT * FROM product
+            WHERE CateID = '$cateID'
+            ORDER BY ProductID ASC;";
+            // $sql = "SELECT * FROM product order by ProductID desc";
+            $result = $this->db->select($sql);
+            return $result;
+        }
+        public function productListFollowBrand($brandName){
+            $brandName = $this->fm->validation($brandName);
+            $brandName = mysqli_real_escape_string($this->db->link, $brandName);
+
+            $sql_check = "SELECT * FROM brand WHERE brandName = '$brandName' LIMIT 1";
+            $result_check = $this->db->select($sql_check);
+            if ($result_check != false){
+                $value = $result_check->fetch_assoc();
+                $brandID = $value['brandID'];
+            }
+            $sql =
+            "SELECT * FROM product
+            WHERE brandID = '$brandID'
+            ORDER BY ProductID ASC";
+            // $sql = "SELECT * FROM product order by ProductID desc";
+            $result = $this->db->select($sql);
+            return $result;
+        }
+        public function productListshowCateName($brandName){
+            $brandName = $this->fm->validation($brandName);
+            $brandName = mysqli_real_escape_string($this->db->link, $brandName);
+
+            $sql_check = "SELECT * FROM brand WHERE brandName = '$brandName' LIMIT 1";
+            $result_check = $this->db->select($sql_check);
+            if ($result_check != false){
+                $value = $result_check->fetch_assoc();
+                $brandID = $value['brandID'];
+                $cateID = $value['CateID'];
+            }
+            $sql =
+            "SELECT * FROM productcategory
+            WHERE CateID = '$cateID'
+            LIMIT 1";
+            // $sql = "SELECT * FROM product order by ProductID desc";
+            $result = $this->db->select($sql);
+            return $result;
+        }
+        public function findProductByContent($findContent){
+            $findContent = $this->fm->validation($findContent);
+            $findContent = mysqli_real_escape_string($this->db->link, $findContent);
+
+
+            $sql = "SELECT product.*, productcategory.cateName, brand.brandName
+            FROM product INNER JOIN productcategory ON product.CateID = productcategory.CateID
+            INNER JOIN brand ON product.brandID = brand.brandID
+            WHERE product.productName LIKE '%$findContent%' OR productcategory.cateName LIKE '%$findContent%' OR brand.brandName LIKE '%$findContent%' ";
+            $result = $this->db->select($sql);
+            return $result;
+        }
+
+        //end user see
+        //user comment
+        public function showQuanComment($productID){
+            $productID = $this->fm->validation($productID);
+            $productID = mysqli_real_escape_string($this->db->link, $productID);
+
+            $sql = "SELECT COUNT(*) as commentCount FROM comment WHERE productID = '$productID'";
+            $result = $this->db->select($sql);
+            if ($result) {
+                $row = $result->fetch_assoc();
+                return isset($row['commentCount']) ? $row['commentCount'] : 0;
+            } else {
+                return 0;
+            }
+            
+            
+        }
+        public function showStart($productID){
+            $productID = $this->fm->validation($productID);
+            $productID = mysqli_real_escape_string($this->db->link, $productID);
+
+            $sql = "SELECT * FROM comment WHERE productID = '$productID'";
+            $result = $this->db->select($sql);
+            return $result;
+            
+        }
+        public function showComment($productID){
+            $productID = $this->fm->validation($productID);
+            $productID = mysqli_real_escape_string($this->db->link, $productID);
+
+            $sql = "SELECT * FROM comment WHERE productID = '$productID' ORDER BY CreatedDate DESC";
+            $result = $this->db->select($sql);
+            return $result;
+            
+        }
+        public function checkRateYet($productID,$userID){
+            $productID = $this->fm->validation($productID);
+            $userID = $this->fm->validation($userID);
+            $userID = mysqli_real_escape_string($this->db->link, $userID);
+            $productID = mysqli_real_escape_string($this->db->link, $productID);
+            
+            $sql= "SELECT * FROM comment WHERE productID='$productID' AND CreatedBy='$userID'";
+            $result=$this->db->select($sql);
+            return $result;
+        }
+
     }
 ?>

@@ -2,14 +2,13 @@
 include '../classes/adminlogin.php';
 ?>
 <?php
-    $class = new AdminLogin();
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        
-        $adminuser = $_POST['adminuser'];
-        $adminpass = md5($_POST['adminpass']);
-        $login_check = $class->admin_login($adminuser, $adminpass);
-        
-    }
+$class = new AdminLogin();
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+    $adminuser = $_POST['adminuser'];
+    $adminpass = md5($_POST['adminpass']);
+    $login_check = $class->admin_login($adminuser, $adminpass);
+}
 ?>
 <!DOCTYPE html>
 
@@ -25,14 +24,14 @@ include '../classes/adminlogin.php';
             <form action="login.php" method="post">
                 <h1>Admin Login</h1>
                 <span>
-                    <?php	
-						if(isset($login_check)){
-							echo $login_check;
-                            echo '
+                    <?php
+                    if (isset($login_check)) {
+                        echo $login_check;
+                        echo '
                         <script>
                             if (typeof window !== "undefined") {
                                 window.addEventListener("DOMContentLoaded", function() {
-                                    var notification = "'. $insertProduct .'";
+                                    var notification = "' . $login_check . '";
                                     if (notification !== "") {
                                         alert(notification);
                                         window.location.href = "productlist.php";
@@ -41,8 +40,8 @@ include '../classes/adminlogin.php';
                             }
                         </script>
                         ';
-						}
-					 ?>
+                    }
+                    ?>
 
                 </span>
                 <div>

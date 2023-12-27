@@ -80,6 +80,12 @@ include_once ($filepath.'/../helpers/format.php');
             return $result;
             
         }
+        public function showCatListAsc() {
+            $sql = "SELECT * FROM productcategory order by CateID asc";
+            $result = $this->db->select($sql);
+            return $result;
+            
+        }
         public function findbyCateID($cateID){
             $cateID = $this->fm->validation($cateID);
             $cateID = mysqli_real_escape_string($this->db->link, $cateID);
